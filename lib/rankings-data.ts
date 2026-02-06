@@ -1,0 +1,282 @@
+export type WeightClass =
+  | "minimumweight"
+  | "light-flyweight"
+  | "flyweight"
+  | "super-flyweight"
+  | "bantamweight"
+  | "super-bantamweight"
+  | "featherweight"
+  | "super-featherweight"
+  | "lightweight"
+  | "super-lightweight"
+  | "welterweight"
+  | "super-welterweight"
+  | "middleweight"
+  | "super-middleweight"
+  | "light-heavyweight"
+  | "cruiserweight"
+  | "heavyweight"
+
+export interface BoxerRanking {
+  rank: number
+  name: string
+  age: number
+  gender: "male" | "female"
+  weightClass: WeightClass
+  wins: number
+  losses: number
+  draws: number
+  knockouts: number
+  location: string
+  registrationDate: string
+  lastFight: string
+  status: "active" | "inactive" | "suspended"
+}
+
+export const mockRankings: BoxerRanking[] = [
+  {
+    rank: 1,
+    name: "Arjun Verma",
+    age: 24,
+    gender: "male",
+    weightClass: "welterweight",
+    wins: 18,
+    losses: 2,
+    draws: 1,
+    knockouts: 12,
+    location: "Dehradun",
+    registrationDate: "2023-01-15",
+    lastFight: "2026-01-20",
+    status: "active",
+  },
+  {
+    rank: 2,
+    name: "Vikram Singh",
+    age: 27,
+    gender: "male",
+    weightClass: "welterweight",
+    wins: 15,
+    losses: 3,
+    draws: 0,
+    knockouts: 10,
+    location: "Dehradun",
+    registrationDate: "2023-03-22",
+    lastFight: "2026-01-10",
+    status: "active",
+  },
+  {
+    rank: 3,
+    name: "Rahul Chauhan",
+    age: 22,
+    gender: "male",
+    weightClass: "welterweight",
+    wins: 12,
+    losses: 4,
+    draws: 2,
+    knockouts: 8,
+    location: "Dehradun",
+    registrationDate: "2023-06-10",
+    lastFight: "2025-12-28",
+    status: "active",
+  },
+  {
+    rank: 1,
+    name: "Priya Sharma",
+    age: 23,
+    gender: "female",
+    weightClass: "featherweight",
+    wins: 14,
+    losses: 1,
+    draws: 0,
+    knockouts: 9,
+    location: "Dehradun",
+    registrationDate: "2023-02-18",
+    lastFight: "2026-01-25",
+    status: "active",
+  },
+  {
+    rank: 2,
+    name: "Anjali Rawat",
+    age: 25,
+    gender: "female",
+    weightClass: "featherweight",
+    wins: 11,
+    losses: 3,
+    draws: 1,
+    knockouts: 6,
+    location: "Dehradun",
+    registrationDate: "2023-04-05",
+    lastFight: "2026-01-15",
+    status: "active",
+  },
+  {
+    rank: 1,
+    name: "Amit Kumar",
+    age: 26,
+    gender: "male",
+    weightClass: "lightweight",
+    wins: 20,
+    losses: 1,
+    draws: 0,
+    knockouts: 15,
+    location: "Dehradun",
+    registrationDate: "2022-11-20",
+    lastFight: "2026-02-01",
+    status: "active",
+  },
+  {
+    rank: 2,
+    name: "Rohit Bisht",
+    age: 24,
+    gender: "male",
+    weightClass: "lightweight",
+    wins: 16,
+    losses: 2,
+    draws: 1,
+    knockouts: 11,
+    location: "Dehradun",
+    registrationDate: "2023-01-30",
+    lastFight: "2026-01-18",
+    status: "active",
+  },
+  {
+    rank: 3,
+    name: "Karan Negi",
+    age: 23,
+    gender: "male",
+    weightClass: "lightweight",
+    wins: 13,
+    losses: 3,
+    draws: 0,
+    knockouts: 9,
+    location: "Dehradun",
+    registrationDate: "2023-05-12",
+    lastFight: "2025-12-30",
+    status: "active",
+  },
+  {
+    rank: 1,
+    name: "Deepak Thapa",
+    age: 28,
+    gender: "male",
+    weightClass: "middleweight",
+    wins: 22,
+    losses: 3,
+    draws: 1,
+    knockouts: 17,
+    location: "Dehradun",
+    registrationDate: "2022-09-15",
+    lastFight: "2026-01-28",
+    status: "active",
+  },
+  {
+    rank: 2,
+    name: "Sanjay Rana",
+    age: 29,
+    gender: "male",
+    weightClass: "middleweight",
+    wins: 19,
+    losses: 4,
+    draws: 0,
+    knockouts: 14,
+    location: "Dehradun",
+    registrationDate: "2022-10-08",
+    lastFight: "2026-01-12",
+    status: "active",
+  },
+  {
+    rank: 1,
+    name: "Neha Joshi",
+    age: 22,
+    gender: "female",
+    weightClass: "lightweight",
+    wins: 10,
+    losses: 2,
+    draws: 0,
+    knockouts: 5,
+    location: "Dehradun",
+    registrationDate: "2023-07-20",
+    lastFight: "2026-01-22",
+    status: "active",
+  },
+  {
+    rank: 2,
+    name: "Pooja Bhatt",
+    age: 24,
+    gender: "female",
+    weightClass: "lightweight",
+    wins: 8,
+    losses: 3,
+    draws: 1,
+    knockouts: 4,
+    location: "Dehradun",
+    registrationDate: "2023-08-15",
+    lastFight: "2026-01-05",
+    status: "active",
+  },
+  {
+    rank: 1,
+    name: "Suresh Rawat",
+    age: 30,
+    gender: "male",
+    weightClass: "heavyweight",
+    wins: 25,
+    losses: 2,
+    draws: 0,
+    knockouts: 21,
+    location: "Dehradun",
+    registrationDate: "2022-06-10",
+    lastFight: "2026-02-03",
+    status: "active",
+  },
+  {
+    rank: 2,
+    name: "Harish Bisht",
+    age: 31,
+    gender: "male",
+    weightClass: "heavyweight",
+    wins: 21,
+    losses: 5,
+    draws: 1,
+    knockouts: 18,
+    location: "Dehradun",
+    registrationDate: "2022-07-22",
+    lastFight: "2026-01-16",
+    status: "active",
+  },
+  {
+    rank: 3,
+    name: "Manish Thakur",
+    age: 28,
+    gender: "male",
+    weightClass: "heavyweight",
+    wins: 17,
+    losses: 6,
+    draws: 0,
+    knockouts: 13,
+    location: "Dehradun",
+    registrationDate: "2023-02-05",
+    lastFight: "2025-12-20",
+    status: "active",
+  },
+]
+
+export const weightClasses: { value: WeightClass; label: string }[] = [
+  { value: "minimumweight", label: "Minimumweight (105 lbs)" },
+  { value: "light-flyweight", label: "Light Flyweight (108 lbs)" },
+  { value: "flyweight", label: "Flyweight (112 lbs)" },
+  { value: "super-flyweight", label: "Super Flyweight (115 lbs)" },
+  { value: "bantamweight", label: "Bantamweight (118 lbs)" },
+  { value: "super-bantamweight", label: "Super Bantamweight (122 lbs)" },
+  { value: "featherweight", label: "Featherweight (126 lbs)" },
+  { value: "super-featherweight", label: "Super Featherweight (130 lbs)" },
+  { value: "lightweight", label: "Lightweight (135 lbs)" },
+  { value: "super-lightweight", label: "Super Lightweight (140 lbs)" },
+  { value: "welterweight", label: "Welterweight (147 lbs)" },
+  { value: "super-welterweight", label: "Super Welterweight (154 lbs)" },
+  { value: "middleweight", label: "Middleweight (160 lbs)" },
+  { value: "super-middleweight", label: "Super Middleweight (168 lbs)" },
+  { value: "light-heavyweight", label: "Light Heavyweight (175 lbs)" },
+  { value: "cruiserweight", label: "Cruiserweight (200 lbs)" },
+  { value: "heavyweight", label: "Heavyweight (200+ lbs)" },
+]
