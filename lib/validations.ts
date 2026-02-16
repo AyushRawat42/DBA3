@@ -15,20 +15,24 @@ const basePersonalInfoSchema = z.object({
 // Aadhaar validation (12 digits)
 const aadhaarSchema = z.string().regex(/^\d{12}$/, "Aadhaar must be 12 digits")
 
-// File upload schema (for demo - just checks if file exists)
-const fileSchema = z.instanceof(File, { message: "Please upload a file" })
-const optionalFileSchema = z.instanceof(File).optional()
+// Backend-backed uploads: store S3 key, not File object
+const uploadedDocSchema = z.string().min(1, "Please upload a file")
+const optionalUploadedDocSchema = z.string().min(1).optional()
+
 
 // ATHLETE FORM SCHEMA
 export const athleteRegistrationSchema = z.object({
   ...basePersonalInfoSchema.shape,
   aadhaar: aadhaarSchema,
-  photo: fileSchema,
-  birthCertificate: fileSchema,
-  domicileCertificate: fileSchema,
-  educationalQualification: z.string().min(1, "Educational qualification is required"),
-  boneDensityCertificate: fileSchema,
-  medicalCertificate: fileSchema,
+  educationalQualification: z
+    .string()
+    .min(1, "Educational qualification is required"),
+ photo: uploadedDocSchema,
+birthCertificate: uploadedDocSchema,
+domicileCertificate: uploadedDocSchema,
+boneDensityCertificate: uploadedDocSchema,
+medicalCertificate: uploadedDocSchema,
+
 })
 
 export type AthleteRegistrationData = z.infer<typeof athleteRegistrationSchema>
@@ -38,9 +42,10 @@ export const coachRegistrationSchema = z.object({
   ...basePersonalInfoSchema.shape,
   aadhaar: aadhaarSchema,
   experience: z.string().min(10, "Please provide detailed experience (minimum 10 characters)"),
-  experiencePdf: optionalFileSchema,
-  photo: fileSchema,
-  coachingAffidavit: fileSchema,
+  experiencePdf: optionalUploadedDocSchema,
+photo: uploadedDocSchema,
+coachingAffidavit: uploadedDocSchema,
+
 })
 
 export type CoachRegistrationData = z.infer<typeof coachRegistrationSchema>

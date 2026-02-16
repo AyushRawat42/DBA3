@@ -28,36 +28,85 @@ export function AcademyRegistrationForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<AcademyRegistrationData>({
-    resolver: zodResolver(academyRegistrationSchema),
+  resolver: zodResolver(academyRegistrationSchema),
+})
+
+  const [regId, setRegId] = useState<string | null>(null)
+
+const getRegId = async () => {
+  if (regId) return regId
+
+  const res = await fetch("/api/registrations/upsert", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type: "academy", formData: {} }),
   })
 
-  const onSubmit = (data: AcademyRegistrationData) => {
-    console.log("Academy Form Data:", data)
-    setFormDataStore(data)
-    setIsSubmitting(false)
-    setShowPayment(true)
-  }
+  if (!res.ok) throw new Error(await res.text())
+  const json = (await res.json()) as { regId: string }
+  setRegId(json.regId)
+  return json.regId
+}
 
-  const handlePaymentSuccess = (transactionId: string) => {
-    setShowPayment(false)
+ const onSubmit = async (data: AcademyRegistrationData) => {
+  setIsSubmitting(true)
+  try {
+    const ensuredRegId = await getRegId()
 
-    const receipt = {
-      transactionId,
-      registrationType: "academy" as const,
-      amount: REGISTRATION_FEES.academy,
-      name: formDataStore.academyName,
-      email: formDataStore.email,
-      phone: formDataStore.phone,
-      date: new Date().toLocaleString("en-IN", {
-        dateStyle: "long",
-        timeStyle: "short",
+    // Save form fields to DynamoDB
+    const res = await fetch("/api/registrations/upsert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        regId: ensuredRegId,
+        type: "academy",
+        formData: data,
       }),
-      formData: formDataStore,
-    }
+    })
 
-    setReceiptData(receipt)
-    setShowReceipt(true)
+    if (!res.ok) throw new Error(await res.text())
+
+    setFormDataStore({ ...data, regId: ensuredRegId } as any)
+    setShowPayment(true)
+  } finally {
+    setIsSubmitting(false)
   }
+}
+
+
+  const handlePaymentSuccess = async (paymentId: string) => {
+  setShowPayment(false)
+
+  const ensuredRegId = await getRegId()
+
+  const submitRes = await fetch("/api/registrations/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ regId: ensuredRegId, type: "academy" }),
+  })
+
+  if (!submitRes.ok) {
+    console.error(await submitRes.text())
+    return
+  }
+
+  const receipt = {
+    transactionId: paymentId,
+    registrationType: "academy" as const,
+    amount: REGISTRATION_FEES.academy,
+    name: formDataStore.academyName,
+    email: formDataStore.email,
+    phone: formDataStore.phone,
+    date: new Date().toLocaleString("en-IN", {
+      dateStyle: "long",
+      timeStyle: "short",
+    }),
+    formData: formDataStore,
+  }
+
+  setReceiptData(receipt)
+  setShowReceipt(true)
+}
 
   return (
     <>
@@ -239,12 +288,14 @@ export function AcademyRegistrationForm() {
 
       {/* Payment Dialog */}
       <PaymentDialog
-        open={showPayment}
-        amount={REGISTRATION_FEES.academy}
-        registrationType="academy"
-        onSuccess={handlePaymentSuccess}
-        onCancel={() => setShowPayment(false)}
-      />
+  open={showPayment}
+  regId={formDataStore?.regId ?? ""}
+  amount={REGISTRATION_FEES.academy}
+  registrationType="academy"
+  onSuccess={handlePaymentSuccess}
+  onCancel={() => setShowPayment(false)}
+/>
+
 
       {/* Receipt Dialog */}
       {receiptData && (

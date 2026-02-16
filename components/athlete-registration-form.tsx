@@ -1,5 +1,5 @@
 "use client"
-
+import { DOC_LABELS } from "@/lib/required-docs"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -22,6 +22,7 @@ import {
 import { FileUpload } from "@/components/file-upload"
 import { PaymentDialog } from "@/components/payment-dialog"
 import { ReceiptGenerator } from "@/components/receipt-generator"
+import { useEffect } from "react"
 
 export function AthleteRegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,6 +30,28 @@ export function AthleteRegistrationForm() {
   const [showReceipt, setShowReceipt] = useState(false)
   const [receiptData, setReceiptData] = useState<any>(null)
   const [formDataStore, setFormDataStore] = useState<any>(null)
+  
+ const [regId, setRegId] = useState<string | null>(null)
+
+const getRegId = async () => {
+  if (regId) return regId
+
+  const res = await fetch("/api/registrations/upsert", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type: "athlete", formData: {} }),
+  })
+
+  if (!res.ok) {
+    throw new Error(await res.text())
+  }
+
+  const json = (await res.json()) as { regId: string }
+  setRegId(json.regId)
+  return json.regId
+}
+
+
 
   const {
     register,
@@ -38,36 +61,83 @@ export function AthleteRegistrationForm() {
     watch,
   } = useForm<AthleteRegistrationData>({
     resolver: zodResolver(athleteRegistrationSchema),
+  defaultValues: {
+    photo: "",
+    birthCertificate: "",
+    domicileCertificate: "",
+    boneDensityCertificate: "",
+    medicalCertificate: "",
+  },
+  })
+  const photoValue = watch("photo")
+const birthValue = watch("birthCertificate")
+
+useEffect(() => {
+  console.log("DOC VALUES", { photoValue, birthValue })
+}, [photoValue, birthValue])
+
+  const onSubmit = async (data: AthleteRegistrationData) => {
+  setIsSubmitting(true)
+  try {
+    const ensuredRegId = await getRegId()
+
+    const res = await fetch("/api/registrations/upsert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        regId: ensuredRegId,
+        type: "athlete",
+        formData: data,
+      }),
+    })
+
+    if (!res.ok) throw new Error(await res.text())
+
+    setFormDataStore({ ...data, regId: ensuredRegId })
+    setShowPayment(true)
+  } finally {
+    setIsSubmitting(false)
+  }
+}
+
+
+
+
+  const handlePaymentSuccess = async (paymentId: string) => {
+  setShowPayment(false)
+
+  const ensuredRegId = await getRegId()
+
+  const submitRes = await fetch("/api/registrations/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ regId: ensuredRegId, type: "athlete" }),
   })
 
-  const onSubmit = (data: AthleteRegistrationData) => {
-    console.log("Athlete Form Data:", data)
-    setFormDataStore(data)
-    setIsSubmitting(false)
-    setShowPayment(true)
+  if (!submitRes.ok) {
+    // show error later with toast; for now console
+    console.error(await submitRes.text())
+    return
   }
 
-  const handlePaymentSuccess = (transactionId: string) => {
-    setShowPayment(false)
-
-    // Prepare receipt data
-    const receipt = {
-      transactionId,
-      registrationType: "athlete" as const,
-      amount: REGISTRATION_FEES.athlete,
-      name: `${formDataStore.firstName} ${formDataStore.lastName}`,
-      email: formDataStore.email,
-      phone: formDataStore.phone,
-      date: new Date().toLocaleString("en-IN", {
-        dateStyle: "long",
-        timeStyle: "short",
-      }),
-      formData: formDataStore,
-    }
-
-    setReceiptData(receipt)
-    setShowReceipt(true)
+  const receipt = {
+    transactionId: paymentId,
+    registrationType: "athlete" as const,
+    amount: REGISTRATION_FEES.athlete,
+    name: `${formDataStore.firstName} ${formDataStore.lastName}`,
+    email: formDataStore.email,
+    phone: formDataStore.phone,
+    date: new Date().toLocaleString("en-IN", {
+      dateStyle: "long",
+      timeStyle: "short",
+    }),
+    formData: formDataStore,
   }
+
+  setReceiptData(receipt)
+  setShowReceipt(true)
+}
+
 
   return (
     <>
@@ -160,7 +230,7 @@ export function AthleteRegistrationForm() {
               <Label htmlFor="gender">
                 Gender <span className="text-destructive">*</span>
               </Label>
-              <Select onValueChange={(value) => setValue("gender", value as any)}>
+              <Select onValueChange={(value) => setValue("gender", value as any, { shouldValidate: true })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
@@ -234,56 +304,97 @@ export function AthleteRegistrationForm() {
           </p>
 
           <div className="grid grid-cols-1 gap-6">
+           <FileUpload
+           id="athlete-photo"
+           label="Photograph"
+           accept="image/*"
+           required
+           docType="photo"
+           getRegId={getRegId}
+          onChange={(result) =>
+  setValue("photo", result?.s3Key ?? "", {
+    shouldValidate: true,
+    shouldDirty: true,
+    shouldTouch: true,
+  })
+}
+
+
+            error={errors.photo?.message}
+           description={DOC_LABELS.photo}
+         />
+
+
             <FileUpload
-              label="Athlete Photo"
-              id="photo"
-              accept="image/*"
-              required
-              onChange={(file) => setValue("photo", file as File)}
-              error={errors.photo?.message}
-              description="Upload a recent passport-size photograph"
+              id="athlete-birthCertificate"
+  label="Birth Certificate"
+  accept="application/pdf"
+  required
+  docType="birthCertificate"
+  getRegId={getRegId}
+  onChange={(result) =>
+  setValue("birthCertificate", result?.s3Key ?? "", {
+    shouldValidate: true,
+    shouldDirty: true,
+    shouldTouch: true,
+  })
+}
+ error={errors.birthCertificate?.message}
+            description={DOC_LABELS.birthCertificate}
             />
 
             <FileUpload
-              label="Birth Certificate"
-              id="birthCertificate"
-              accept=".pdf"
-              required
-              onChange={(file) => setValue("birthCertificate", file as File)}
-              error={errors.birthCertificate?.message}
-              description="Upload birth certificate in PDF format"
+              id="athlete-domicileCertificate"
+  label="Domicile Certificate"
+  accept="application/pdf"
+  required
+  docType="domicileCertificate"
+  getRegId={getRegId}
+  onChange={(result) =>
+    setValue("domicileCertificate", result?.s3Key ?? "", {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    })
+  }
+  error={errors.domicileCertificate?.message}
+  description={DOC_LABELS.domicileCertificate}
             />
 
             <FileUpload
-              label="Domicile Certificate"
-              id="domicileCertificate"
-              accept=".pdf"
-              required
-              onChange={(file) => setValue("domicileCertificate", file as File)}
-              error={errors.domicileCertificate?.message}
-              description="Upload domicile certificate in PDF format"
+              id="athlete-boneDensityCertificate"
+  label="Bone Density Report"
+  accept="application/pdf"
+  required
+  docType="boneDensityCertificate"
+  getRegId={getRegId}
+  onChange={(result) =>
+    setValue("boneDensityCertificate", result?.s3Key ?? "", {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    })
+  }
+  error={errors.boneDensityCertificate?.message}
+  description={DOC_LABELS.boneDensityCertificate}
             />
 
             <FileUpload
-              label="Bone Density Certificate"
-              id="boneDensityCertificate"
-              accept=".pdf"
-              required
-              onChange={(file) =>
-                setValue("boneDensityCertificate", file as File)
-              }
-              error={errors.boneDensityCertificate?.message}
-              description="Upload bone density test report in PDF format"
-            />
-
-            <FileUpload
-              label="Annual Medical Certificate"
-              id="medicalCertificate"
-              accept=".pdf"
-              required
-              onChange={(file) => setValue("medicalCertificate", file as File)}
-              error={errors.medicalCertificate?.message}
-              description="Upload annual medical fitness certificate in PDF format"
+              id="athlete-medicalCertificate"
+  label="Medical Fitness Certificate"
+  accept="application/pdf"
+  required
+  docType="medicalCertificate"
+  getRegId={getRegId}
+  onChange={(result) =>
+    setValue("medicalCertificate", result?.s3Key ?? "", {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    })
+  }
+  error={errors.medicalCertificate?.message}
+  description={DOC_LABELS.medicalCertificate}
             />
           </div>
         </div>
@@ -322,13 +433,15 @@ export function AthleteRegistrationForm() {
       </form>
 
       {/* Payment Dialog */}
-      <PaymentDialog
-        open={showPayment}
-        amount={REGISTRATION_FEES.athlete}
-        registrationType="athlete"
-        onSuccess={handlePaymentSuccess}
-        onCancel={() => setShowPayment(false)}
-      />
+     <PaymentDialog
+  open={showPayment}
+  regId={formDataStore?.regId ?? ""}
+  amount={REGISTRATION_FEES.athlete}
+  registrationType="athlete"
+  onSuccess={handlePaymentSuccess}
+  onCancel={() => setShowPayment(false)}
+/>
+
 
       {/* Receipt Dialog */}
       {receiptData && (

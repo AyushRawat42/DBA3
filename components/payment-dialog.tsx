@@ -14,14 +14,17 @@ import { formatCurrency } from "@/lib/validations"
 
 interface PaymentDialogProps {
   open: boolean
+  regId: string
   amount: number
-  onSuccess: (transactionId: string) => void
+  onSuccess: (paymentId: string) => void
   onCancel: () => void
   registrationType: "athlete" | "coach" | "academy"
 }
 
+
 export function PaymentDialog({
   open,
+   regId,
   amount,
   onSuccess,
   onCancel,
@@ -29,16 +32,30 @@ export function PaymentDialog({
 }: PaymentDialogProps) {
   const [processing, setProcessing] = useState(false)
 
-  const handlePayment = () => {
-    setProcessing(true)
+  const handlePayment = async () => {
+  setProcessing(true)
+  try {
+    if (!regId) {
+      throw new Error("Missing regId")
+    }
+    const res = await fetch("/api/payments/mock-success", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        regId,
+        registrationType,
+        amount,
+      }),
+    })
 
-    // Mock payment processing (2 seconds delay)
-    setTimeout(() => {
-      const transactionId = `TXN${Date.now()}${Math.random().toString(36).substring(2, 9).toUpperCase()}`
-      setProcessing(false)
-      onSuccess(transactionId)
-    }, 2000)
+    if (!res.ok) throw new Error(await res.text())
+    const json = (await res.json()) as { paymentId: string }
+    onSuccess(json.paymentId)
+  } finally {
+    setProcessing(false)
   }
+}
+
 
   return (
     <Dialog open={open} onOpenChange={onCancel}>

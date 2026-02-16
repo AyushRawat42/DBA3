@@ -1,5 +1,6 @@
 "use client"
 
+import { DOC_LABELS } from "@/lib/required-docs"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,22 +31,52 @@ export function CoachRegistrationForm() {
   const [showReceipt, setShowReceipt] = useState(false)
   const [receiptData, setReceiptData] = useState<any>(null)
   const [formDataStore, setFormDataStore] = useState<any>(null)
+   const [regId, setRegId] = useState<string | null>(null)
 
+const getRegId = async () => {
+  if (regId) return regId
+
+  // Create a minimal draft; you can send more fields later if you want
+  const res = await fetch("/api/registrations/upsert", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type: "coach", formData: {} }),
+  })
+
+  if (!res.ok) throw new Error(await res.text())
+  const json = (await res.json()) as { regId: string }
+  setRegId(json.regId)
+  return json.regId
+}
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
   } = useForm<CoachRegistrationData>({
-    resolver: zodResolver(coachRegistrationSchema),
-  })
+  resolver: zodResolver(coachRegistrationSchema),
+  defaultValues: {
+    photo: "",
+    coachingAffidavit: "",
+    experiencePdf: undefined, // optional
+  },
+})
 
-  const onSubmit = (data: CoachRegistrationData) => {
+
+  const onSubmit = async (data: CoachRegistrationData) => {
+  setIsSubmitting(true)
+  try {
+    const ensuredRegId = await getRegId()
+
     console.log("Coach Form Data:", data)
-    setFormDataStore(data)
-    setIsSubmitting(false)
+    setFormDataStore({ ...data, regId: ensuredRegId } as any)
+
     setShowPayment(true)
+  } finally {
+    setIsSubmitting(false)
   }
+}
+
 
   const handlePaymentSuccess = (transactionId: string) => {
     setShowPayment(false)
@@ -227,43 +258,67 @@ export function CoachRegistrationForm() {
           </div>
         </div>
 
-        {/* Document Uploads */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-primary">
-            Required Documents
-          </h3>
+       {/* Document Uploads */}
+<div className="space-y-4">
+  <h3 className="text-lg font-semibold text-primary">Required Documents</h3>
 
-          <div className="grid grid-cols-1 gap-6">
-            <FileUpload
-              label="Coach Photo"
-              id="photo"
-              accept="image/*"
-              required
-              onChange={(file) => setValue("photo", file as File)}
-              error={errors.photo?.message}
-              description="Upload a recent passport-size photograph"
-            />
+  <div className="grid grid-cols-1 gap-6">
+    <FileUpload
+      id="coach-photo"
+      label="Photograph"
+      accept="image/*"
+      required
+      docType="photo"
+      getRegId={getRegId}
+      onChange={(result) =>
+        setValue("photo", result?.s3Key ?? "", {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        })
+      }
+      error={errors.photo?.message}
+      description={DOC_LABELS.photo}
+    />
 
-            <FileUpload
-              label="Coaching Affidavit"
-              id="coachingAffidavit"
-              accept=".pdf"
-              required
-              onChange={(file) => setValue("coachingAffidavit", file as File)}
-              error={errors.coachingAffidavit?.message}
-              description="Upload signed coaching affidavit in PDF format"
-            />
+    <FileUpload
+      id="coach-coachingAffidavit"
+      label="Coaching Affidavit"
+      accept="application/pdf"
+      required
+      docType="coachingAffidavit"
+      getRegId={getRegId}
+      onChange={(result) =>
+        setValue("coachingAffidavit", result?.s3Key ?? "", {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        })
+      }
+      error={errors.coachingAffidavit?.message}
+      description={DOC_LABELS.coachingAffidavit}
+    />
 
-            <FileUpload
-              label="Experience Certificate (Optional)"
-              id="experiencePdf"
-              accept=".pdf"
-              onChange={(file) => setValue("experiencePdf", file || undefined)}
-              error={errors.experiencePdf?.message}
-              description="Upload experience certificates or achievements in PDF format (optional)"
-            />
-          </div>
-        </div>
+    <FileUpload
+      id="coach-experiencePdf"
+      label="Experience Certificates (Optional)"
+      accept="application/pdf"
+      docType="experiencePdf"
+      getRegId={getRegId}
+      onChange={(result) =>
+        setValue("experiencePdf", result?.s3Key, {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        })
+      }
+      error={errors.experiencePdf?.message}
+      description={DOC_LABELS.experiencePdf}
+    />
+  </div>
+</div>
+
+
 
         {/* Registration Fee Info */}
         <div className="bg-accent/10 border border-accent rounded-lg p-4">
@@ -300,12 +355,13 @@ export function CoachRegistrationForm() {
 
       {/* Payment Dialog */}
       <PaymentDialog
-        open={showPayment}
-        amount={REGISTRATION_FEES.coach}
-        registrationType="coach"
-        onSuccess={handlePaymentSuccess}
-        onCancel={() => setShowPayment(false)}
-      />
+  open={showPayment}
+  regId={formDataStore?.regId ?? ""}
+  amount={REGISTRATION_FEES.coach}
+  registrationType="coach"
+  onSuccess={handlePaymentSuccess}
+  onCancel={() => setShowPayment(false)}
+/>
 
       {/* Receipt Dialog */}
       {receiptData && (
