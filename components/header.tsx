@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Shield } from "lucide-react"
+
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -44,6 +45,15 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            {/* Desktop nav - after your existing navItems.map(...) */}
+            <Link
+              href="/admin/login"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors ml-2 border-l pl-4"
+            >
+            <Shield className="h-3 w-3" />
+            Admin
+           </Link>
+
           </nav>
 
           {/* Mobile Menu Button */}
@@ -69,6 +79,14 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            <Link
+      href="/admin/login"
+      onClick={() => setIsOpen(false)}
+      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors py-2 border-t mt-2 pt-4 px-3"
+    >
+      <Shield className="h-4 w-4" />
+      Admin Login
+    </Link>
           </nav>
         )}
       </div>
