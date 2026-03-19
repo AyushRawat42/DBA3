@@ -1,0 +1,12 @@
+import type { NextConfig } from "next"
+
+const nextConfig: NextConfig = {
+  env: {
+    S3_BUCKET_NAME: "dba3-docs-dev-softwarelab-dehradun",
+    DDB_TABLE_MAIN: "DBA3_Main",
+    DDB_TABLE_QUEUE: "DBA3_ReviewQueue",
+    DDB_TABLE_EVENTS: "DBA3_Events",
+  },
+}
+
+export default nextConfig
