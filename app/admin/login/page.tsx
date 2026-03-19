@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export default function AdminLoginPage() {
+// ─── Inner component: uses useSearchParams ───────────────────────────────────
+function LoginContent() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -75,5 +76,14 @@ export default function AdminLoginPage() {
         </Button>
       </form>
     </div>
+  )
+}
+
+// ─── Default export: wraps with Suspense ─────────────────────────────────────
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center text-muted-foreground">Loading…</div>}>
+      <LoginContent />
+    </Suspense>
   )
 }
