@@ -1,7 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import { Header } from "@/components/header"
+// import { Header } from "@/components/header"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
@@ -43,7 +43,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
+        {/* <Header /> */}
+        <Analytics/>
         {children}
       </body>
     </html>

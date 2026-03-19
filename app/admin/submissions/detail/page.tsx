@@ -1,14 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 const DOCUMENT_FIELDS = [
   "photo", "birthCertificate", "domicileCertificate",
   "boneDensityCertificate", "medicalCertificate",
-  "coachingAffidavit", "experiencePdf", "academyCertificate",
-  "dateofBirth", "educationalQualification", "aadhaar", "phone"
+  "coachingAffidavit", "experiencePdf", "academyCertificate"
 ]
 
 const HIDDEN_FIELDS = ["PK", "SK"]
@@ -51,16 +50,20 @@ function DocumentLink({ s3Key }: { s3Key: string }) {
 }
 
 export default function AdminSubmissionDetailPage() {
-  const params = useParams()
+  const searchParams = useSearchParams()
   const [submission, setSubmission] = useState<Record<string, any> | null>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    const raw = params.regId as string
-    const pk = decodeURIComponent(raw)
-    console.log("Decoded PK:", pk)
+    const pk = searchParams.get("pk")
+    console.log("PK from query:", pk)
+
+    if (!pk) {
+      setLoading(false)
+      return
+    }
 
     fetch(`/api/admin/submissions/detail?pk=${encodeURIComponent(pk)}`)
       .then(r => r.json())
@@ -70,7 +73,7 @@ export default function AdminSubmissionDetailPage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [])
+  }, [searchParams])
 
   async function handleAction(status: "approved" | "rejected") {
     if (!submission) return

@@ -1,17 +1,20 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 export function AdminHeader() {
   const router = useRouter()
+  const pathname = usePathname()
 
+  // Don't show header at all on the login page
+  if (pathname === "/admin/login") return null
   async function handleLogout() {
     await fetch("/api/admin/logout", {
       method: "POST",
       credentials: "include",
     })
-    router.push("/admin/login")
+    router.push("/")
   }
 
   return (

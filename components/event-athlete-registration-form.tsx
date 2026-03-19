@@ -39,6 +39,7 @@ export function EventAthleteRegistrationForm({
   const [showReceipt, setShowReceipt] = useState(false)
   const [receiptData, setReceiptData] = useState<any>(null)
   const [formDataStore, setFormDataStore] = useState<any>(null)
+  const [regId, setRegId] = useState<string | null>(null)
 
   const fee = useMemo(() => {
     return getEventFee({
@@ -58,16 +59,72 @@ export function EventAthleteRegistrationForm({
     resolver: zodResolver(eventAthleteRegistrationSchema),
   })
 
-  const onSubmit = (data: EventAthleteRegistrationData) => {
-    setIsSubmitting(true)
-    console.log("Event Athlete Form Data:", { eventTitle, eventDateISO, ...data })
-    setFormDataStore(data)
-    setIsSubmitting(false)
-    setShowPayment(true)
+  const getRegId = async () => {
+    if (regId) return regId
+
+    const res = await fetch("/api/registrations/upsert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "athlete",
+        formData: { eventTitle, eventDateISO },
+      }),
+    })
+
+    if (!res.ok) {
+      throw new Error(await res.text())
+    }
+
+    const json = (await res.json()) as { regId: string }
+    setRegId(json.regId)
+    return json.regId
   }
 
-  const handlePaymentSuccess = (transactionId: string) => {
+  const onSubmit = async (data: EventAthleteRegistrationData) => {
+    setIsSubmitting(true)
+
+    try {
+      const ensuredRegId = await getRegId()
+
+      const res = await fetch("/api/registrations/upsert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          regId: ensuredRegId,
+          type: "athlete",
+          formData: {
+            eventTitle,
+            eventDateISO,
+            ...data,
+          },
+        }),
+      })
+
+      if (!res.ok) throw new Error(await res.text())
+
+      setFormDataStore({ ...data, regId: ensuredRegId })
+      setShowPayment(true)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handlePaymentSuccess = async (transactionId: string) => {
     setShowPayment(false)
+
+    const ensuredRegId = await getRegId()
+
+    const submitRes = await fetch("/api/registrations/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ regId: ensuredRegId, type: "athlete" }),
+    })
+
+    if (!submitRes.ok) {
+      // show error later with toast; for now log
+      console.error(await submitRes.text())
+      return
+    }
 
     const receipt = {
       transactionId,
@@ -185,7 +242,15 @@ export function EventAthleteRegistrationForm({
               id="photo"
               accept="image/*"
               required
-              onChange={(f) => setValue("photo", f as File)}
+              getRegId={getRegId}
+              docType="photo"
+              onChange={(result) =>
+                setValue("photo", result?.s3Key ?? "", {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
               error={errors.photo?.message}
             />
 
@@ -194,7 +259,15 @@ export function EventAthleteRegistrationForm({
               id="birthCertificate"
               accept=".pdf"
               required
-              onChange={(f) => setValue("birthCertificate", f as File)}
+              getRegId={getRegId}
+              docType="birthCertificate"
+              onChange={(result) =>
+                setValue("birthCertificate", result?.s3Key ?? "", {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
               error={errors.birthCertificate?.message}
             />
 
@@ -203,7 +276,15 @@ export function EventAthleteRegistrationForm({
               id="domicileCertificate"
               accept=".pdf"
               required
-              onChange={(f) => setValue("domicileCertificate", f as File)}
+              getRegId={getRegId}
+              docType="domicileCertificate"
+              onChange={(result) =>
+                setValue("domicileCertificate", result?.s3Key ?? "", {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
               error={errors.domicileCertificate?.message}
             />
 
@@ -212,7 +293,15 @@ export function EventAthleteRegistrationForm({
               id="boneDensityCertificate"
               accept=".pdf"
               required
-              onChange={(f) => setValue("boneDensityCertificate", f as File)}
+              getRegId={getRegId}
+              docType="boneDensityCertificate"
+              onChange={(result) =>
+                setValue("boneDensityCertificate", result?.s3Key ?? "", {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
               error={errors.boneDensityCertificate?.message}
             />
 
@@ -221,7 +310,15 @@ export function EventAthleteRegistrationForm({
               id="medicalCertificate"
               accept=".pdf"
               required
-              onChange={(f) => setValue("medicalCertificate", f as File)}
+              getRegId={getRegId}
+              docType="medicalCertificate"
+              onChange={(result) =>
+                setValue("medicalCertificate", result?.s3Key ?? "", {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
               error={errors.medicalCertificate?.message}
             />
 
@@ -231,7 +328,15 @@ export function EventAthleteRegistrationForm({
               id="bloodReport"
               accept=".pdf"
               required
-              onChange={(f) => setValue("bloodReport", f as File)}
+              getRegId={getRegId}
+              docType="bloodReport"
+              onChange={(result) =>
+                setValue("bloodReport", result?.s3Key ?? "", {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
               error={errors.bloodReport?.message}
               description="Recent blood test report in PDF format"
             />
@@ -241,7 +346,15 @@ export function EventAthleteRegistrationForm({
               id="hivCertificate"
               accept=".pdf"
               required
-              onChange={(f) => setValue("hivCertificate", f as File)}
+              getRegId={getRegId}
+              docType="hivCertificate"
+              onChange={(result) =>
+                setValue("hivCertificate", result?.s3Key ?? "", {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
               error={errors.hivCertificate?.message}
               description="HIV test certificate in PDF format"
             />
@@ -277,6 +390,7 @@ export function EventAthleteRegistrationForm({
 
       <PaymentDialog
         open={showPayment}
+        regId={regId ?? ""}
         amount={fee.amount}
         registrationType="athlete"
         onSuccess={handlePaymentSuccess}

@@ -12,7 +12,9 @@ const basePersonalInfoSchema = z.object({
 })
 
 const aadhaarSchema = z.string().regex(/^\d{12}$/, "Aadhaar must be 12 digits")
-const fileSchema = z.instanceof(File, { message: "Please upload a file" })
+
+// Stored as S3 keys (strings) in the backend
+const uploadedDocSchema = z.string().min(1, "Please upload a file")
 
 export const eventAthleteRegistrationSchema = z.object({
   ...basePersonalInfoSchema.shape,
@@ -21,15 +23,15 @@ export const eventAthleteRegistrationSchema = z.object({
     .string()
     .min(1, "Educational qualification is required"),
 
-  photo: fileSchema,
-  birthCertificate: fileSchema,
-  domicileCertificate: fileSchema,
-  boneDensityCertificate: fileSchema,
-  medicalCertificate: fileSchema,
+  photo: uploadedDocSchema,
+  birthCertificate: uploadedDocSchema,
+  domicileCertificate: uploadedDocSchema,
+  boneDensityCertificate: uploadedDocSchema,
+  medicalCertificate: uploadedDocSchema,
 
   // New fields
-  bloodReport: fileSchema,
-  hivCertificate: fileSchema,
+  bloodReport: uploadedDocSchema,
+  hivCertificate: uploadedDocSchema,
 })
 
 export type EventAthleteRegistrationData = z.infer<
