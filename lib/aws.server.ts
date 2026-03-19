@@ -6,7 +6,11 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb"
 import { env } from "@/lib/env"
 
 const baseConfig = {
-  region: env.AWS_REGION,
+  region: env.APP_AWS_REGION,
+   credentials: {
+    accessKeyId: env.APP_AWS_ACCESS_KEY_ID!,      // ← added
+    secretAccessKey: env.APP_AWS_SECRET_ACCESS_KEY!,  // ← added
+  },
 }
 
 export const s3 = new S3Client(baseConfig)
