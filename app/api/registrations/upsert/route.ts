@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ regId })
  } catch (e) {
-    console.error("UPSERT ERROR", e)
+    console.error("UPSERT CRASH:", e)  // ← this will appear in Amplify logs
     return new Response(
       JSON.stringify({ error: e instanceof Error ? e.message : String(e) }),
       { status: 500 }
