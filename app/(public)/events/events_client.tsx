@@ -1,96 +1,45 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MapPin, Users, Clock } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { EventAthleteRegistrationForm } from "@/components/event-athlete-registration-form"
 
-const events = [
-  {
-    id: 1,
-    title: "State Junior Boxing Championship",
-    date: "January 15-20, 2025",
-    time: "9:00 AM - 6:00 PM",
-    location: "Dehradun Sports Complex, Dehradun",
-    category: "Championship",
-    description:
-      "Premier junior boxing championship featuring athletes from across Uttarakhand in all weight categories.",
-    participants: "200+ Athletes",
-    status: "upcoming",
-  },
-  {
-    id: 2,
-    title: "Regional Qualifiers Round 1",
-    date: "January 25, 2025",
-    time: "8:00 AM - 5:00 PM",
-    location: "DBA Training Center, Dehradun",
-    category: "Qualifier",
-    description: "First round of regional qualifiers for National Games team selection.",
-    participants: "120+ Athletes",
-    status: "upcoming",
-  },
-  {
-    id: 3,
-    title: "Elite Coaching Workshop",
-    date: "February 5-7, 2025",
-    time: "10:00 AM - 4:00 PM",
-    location: "DBA Training Center, Dehradun",
-    category: "Workshop",
-    description:
-      "Three-day intensive coaching workshop with international boxing experts covering advanced techniques.",
-    participants: "50 Coaches & Athletes",
-    status: "upcoming",
-  },
-  {
-    id: 4,
-    title: "Women's Boxing Championship",
-    date: "February 15-17, 2025",
-    time: "9:00 AM - 6:00 PM",
-    location: "Dehradun Sports Complex, Dehradun",
-    category: "Championship",
-    description:
-      "Dedicated championship for women boxers across all age categories and weight classes.",
-    participants: "100+ Athletes",
-    status: "upcoming",
-  },
-  {
-    id: 5,
-    title: "Open Boxing Tournament",
-    date: "March 1-2, 2025",
-    time: "10:00 AM - 8:00 PM",
-    location: "DBA Training Center, Dehradun",
-    category: "Tournament",
-    description:
-      "Open tournament welcoming boxers from across the region of all skill levels.",
-    participants: "150+ Participants",
-    status: "upcoming",
-  },
-  {
-    id: 6,
-    title: "Beginner Boxing Workshop",
-    date: "March 15, 2025",
-    time: "4:00 PM - 6:00 PM",
-    location: "DBA Training Center, Dehradun",
-    category: "Training",
-    description: "Free introductory workshop for anyone interested in learning boxing basics.",
-    participants: "Unlimited",
-    status: "upcoming",
-  },
-]
+type Event = {
+  id: string
+  title: string
+  date: string
+  location: string
+  description: string
+  category: string
+  status?: string
+  time?: string
+  participants?: string
+}
+
+
+
+
 
 const BASE_EVENT_FEE = 1000 // X (change anytime)
 
 export function EventsClient() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+ const [events, setEvents] = useState<Event[]>([])
 
-  const upcomingRegistrationEventDateISO = useMemo(() => {
-    const d = new Date()
-    d.setDate(d.getDate() + 48) // 45–50 days window
-    return d.toISOString().slice(0, 10) // YYYY-MM-DD
-  }, [])
 
+useEffect(() => {
+  fetch("/api/events")
+    .then(r => r.json())
+    .then(data => setEvents(data.events ?? []))
+}, [])
+const upcomingRegistrationEventDateISO = useMemo(() => {
+  const d = new Date()
+  d.setDate(d.getDate() + 48)
+  return d.toISOString().slice(0, 10)
+}, [])
   return (
     <main className="min-h-screen bg-background">
       {/* Page Header */}

@@ -12,3 +12,5 @@ const client = new DynamoDBClient({
 export const db = DynamoDBDocumentClient.from(client)
 export const TABLE_MAIN = process.env.DDB_TABLE_MAIN!
 export const TABLE_QUEUE = process.env.DDB_TABLE_QUEUE!
+export const TABLE_EVENTS = process.env.DDB_TABLE_EVENTS!
+

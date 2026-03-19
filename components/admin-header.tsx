@@ -17,17 +17,28 @@ export function AdminHeader() {
     router.push("/")
   }
 
-  return (
-    <header className="flex items-center justify-between px-6 py-4 border-b bg-background">
+ return (
+  <header className="flex items-center justify-between px-6 py-4 border-b bg-background">
+    <div className="flex items-center gap-6">
       <h1 className="text-lg font-semibold">DBA Admin Panel</h1>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleLogout}
-        className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-      >
-        Logout
-      </Button>
-    </header>
-  )
+      <nav className="flex gap-4 text-sm">
+        <a href="/admin" className="text-muted-foreground hover:text-foreground">
+          Registrations
+        </a>
+        <a href="/admin/events" className="text-muted-foreground hover:text-foreground">
+          Events
+        </a>
+      </nav>
+    </div>
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleLogout}
+      className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+    >
+      Logout
+    </Button>
+  </header>
+)
+
 }
