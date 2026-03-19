@@ -14,6 +14,13 @@ const upsertSchema = z.object({
 })
 
 export async function POST(req: Request) {
+   try {
+    console.log("ENV CHECK", {
+      region: process.env.APP_AWS_REGION,
+      table: process.env.DDB_TABLE_MAIN,
+      hasKey: !!process.env.APP_AWS_ACCESS_KEY_ID,
+      hasSecret: !!process.env.APP_AWS_SECRET_ACCESS_KEY,
+    })
   const body = await req.json()
   const { regId: regIdInput, type, formData } = upsertSchema.parse(body)
 
@@ -48,4 +55,11 @@ export async function POST(req: Request) {
   )
 
   return NextResponse.json({ regId })
+ } catch (e) {
+    console.error("UPSERT ERROR", e)
+    return new Response(
+      JSON.stringify({ error: e instanceof Error ? e.message : String(e) }),
+      { status: 500 }
+    )
+  }
 }
