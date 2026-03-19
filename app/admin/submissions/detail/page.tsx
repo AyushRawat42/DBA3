@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
@@ -49,7 +49,8 @@ function DocumentLink({ s3Key }: { s3Key: string }) {
   )
 }
 
-export default function AdminSubmissionDetailPage() {
+// ─── Inner component: uses useSearchParams ───────────────────────────────────
+function SubmissionDetailContent() {
   const searchParams = useSearchParams()
   const [submission, setSubmission] = useState<Record<string, any> | null>(null)
   const [loading, setLoading] = useState(true)
@@ -58,19 +59,11 @@ export default function AdminSubmissionDetailPage() {
 
   useEffect(() => {
     const pk = searchParams.get("pk")
-    console.log("PK from query:", pk)
-
-    if (!pk) {
-      setLoading(false)
-      return
-    }
+    if (!pk) { setLoading(false); return }
 
     fetch(`/api/admin/submissions/detail?pk=${encodeURIComponent(pk)}`)
       .then(r => r.json())
-      .then(data => {
-        console.log("API response:", data)
-        setSubmission(data.submission)
-      })
+      .then(data => setSubmission(data.submission))
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [searchParams])
@@ -176,5 +169,14 @@ export default function AdminSubmissionDetailPage() {
         </div>
       )}
     </div>
+  )
+}
+
+// ─── Default export: wraps with Suspense ─────────────────────────────────────
+export default function AdminSubmissionDetailPage() {
+  return (
+    <Suspense fallback={<p className="p-6 text-muted-foreground">Loading…</p>}>
+      <SubmissionDetailContent />
+    </Suspense>
   )
 }
