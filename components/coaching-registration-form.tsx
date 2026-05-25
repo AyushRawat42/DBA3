@@ -19,20 +19,17 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  sportsRegistrationSchema,
-  type SportsRegistrationData,
+  coachingRegistrationSchema,
+  type CoachingRegistrationData,
 } from "@/lib/validations"
 
-const sports = [
-  "Badminton",
-  "Air Rifle / Pistol Shooting",
-  "Swimming",
-  "Roller Skating",
-  "Pickleball",
-  "Boxing",
+const courses = [
+  "NDA / CDS / OTA / AFCAT",
+  "Sainik School / RIMC / RMS CET",
+  "Sports Coaching & Fitness",
 ] as const
 
-export function AthleteRegistrationForm() {
+export function CoachingRegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submittedName, setSubmittedName] = useState("")
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -43,28 +40,28 @@ export function AthleteRegistrationForm() {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<SportsRegistrationData>({
-    resolver: zodResolver(sportsRegistrationSchema),
+  } = useForm<CoachingRegistrationData>({
+    resolver: zodResolver(coachingRegistrationSchema),
     defaultValues: {
       studentFullName: "",
       parentGuardianName: "",
       mobile: "",
       alternateMobile: "",
       email: "",
+      currentClass: "",
       city: "",
-      preferredBatchTiming: "",
-      previousExperience: "",
+      schoolName: "",
       message: "",
       consent: false,
     },
   })
 
-  async function onSubmit(data: SportsRegistrationData) {
+  async function onSubmit(data: CoachingRegistrationData) {
     setIsSubmitting(true)
     setSubmitError(null)
 
     try {
-      const res = await fetch("/api/submissions/sports", {
+      const res = await fetch("/api/submissions/coaching", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -87,10 +84,10 @@ export function AthleteRegistrationForm() {
   if (submittedName) {
     return (
       <div className="rounded-lg border bg-background p-8 text-center shadow-sm">
-        <CheckCircle2 className="mx-auto mb-4 size-12 text-primary" />
+        <CheckCircle2 className="mx-auto mb-4 size-12 text-secondary" />
         <h2 className="text-2xl font-semibold">Application received</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-          Thank you, {submittedName}. The Aspire Sports Academy admissions team will contact you shortly.
+          Thank you, {submittedName}. The Aspire Defence Academy team will contact you shortly.
         </p>
         <Button className="mt-6" onClick={() => setSubmittedName("")}>
           Submit another application
@@ -102,9 +99,9 @@ export function AthleteRegistrationForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 rounded-lg border bg-background p-6 shadow-sm">
       <div>
-        <h2 className="text-xl font-semibold">Sports admission details</h2>
+        <h2 className="text-xl font-semibold">Coaching admission details</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Share the student details and preferred training program.
+          Share the student details and preferred defence coaching path.
         </p>
       </div>
 
@@ -129,35 +126,31 @@ export function AthleteRegistrationForm() {
           <Input {...register("email")} type="email" autoComplete="email" />
         </Field>
 
-        <Field label="Age" error={errors.age?.message}>
-          <Input {...register("age", { valueAsNumber: true })} type="number" min={3} max={100} />
+        <Field label="Current class" error={errors.currentClass?.message}>
+          <Input {...register("currentClass")} placeholder="Class 8, Class 12, Graduate..." />
         </Field>
 
         <Field label="City" error={errors.city?.message}>
           <Input {...register("city")} autoComplete="address-level2" />
         </Field>
 
-        <Field label="Sport interested in" error={errors.sportInterestedIn?.message}>
-          <Select onValueChange={(value) => setValue("sportInterestedIn", value as SportsRegistrationData["sportInterestedIn"], { shouldValidate: true })}>
+        <Field label="Course interested in" error={errors.courseInterestedIn?.message}>
+          <Select onValueChange={(value) => setValue("courseInterestedIn", value as CoachingRegistrationData["courseInterestedIn"], { shouldValidate: true })}>
             <SelectTrigger>
-              <SelectValue placeholder="Select sport" />
+              <SelectValue placeholder="Select course" />
             </SelectTrigger>
             <SelectContent>
-              {sports.map((sport) => (
-                <SelectItem key={sport} value={sport}>
-                  {sport}
+              {courses.map((course) => (
+                <SelectItem key={course} value={course}>
+                  {course}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </Field>
 
-        <Field label="Preferred batch timing" error={errors.preferredBatchTiming?.message}>
-          <Input {...register("preferredBatchTiming")} placeholder="Morning, evening, weekend..." />
-        </Field>
-
-        <Field label="Previous experience" error={errors.previousExperience?.message}>
-          <Input {...register("previousExperience")} placeholder="Beginner, school team, club training..." />
+        <Field label="School name" error={errors.schoolName?.message}>
+          <Input {...register("schoolName")} />
         </Field>
       </div>
 
@@ -170,7 +163,7 @@ export function AthleteRegistrationForm() {
           <Checkbox
             onCheckedChange={(checked) => setValue("consent", checked === true, { shouldValidate: true })}
           />
-          <span>I agree that Aspire Sports Academy may contact me about this admission enquiry.</span>
+          <span>I agree that Aspire Defence Academy may contact me about this admission enquiry.</span>
         </label>
         {errors.consent && <p className="text-sm text-destructive">{errors.consent.message}</p>}
       </div>
@@ -184,7 +177,7 @@ export function AthleteRegistrationForm() {
             Submitting
           </>
         ) : (
-          "Submit sports registration"
+          "Submit coaching registration"
         )}
       </Button>
     </form>

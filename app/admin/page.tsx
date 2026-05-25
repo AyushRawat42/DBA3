@@ -1,150 +1,190 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
 
-type Submission = Record<string, any>
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-const TYPE_COLORS: Record<string, string> = {
-  athlete: "bg-blue-100 text-blue-700",
-  coach: "bg-green-100 text-green-700",
-  academy: "bg-purple-100 text-purple-700",
-  unknown: "bg-gray-100 text-gray-600",
+type Submission = {
+  id: string
+  formType: "sports" | "coaching"
+  createdAt: string
+  status: "New" | "Contacted" | "Qualified" | "Closed"
+  studentFullName?: string
+  parentGuardianName?: string
+  mobile?: string
+  email?: string
+  city?: string
+  sportInterestedIn?: string
+  courseInterestedIn?: string
 }
 
-function getName(s: Submission): string {
-  if (s.academyName) return s.academyName
-  if (s.firstName || s.lastName) return `${s.firstName ?? ""} ${s.lastName ?? ""}`.trim()
-  return "—"
-}
-
-function getType(s: Submission): string {
-  return s.type ?? s.registrationType ?? s.regType ?? "unknown"
-}
-
-function getId(s: Submission, index: number): string {
-  return s.PK ?? s.SK ?? s.id ?? String(index)
-}
+const statuses = ["all", "New", "Contacted", "Qualified", "Closed"] as const
+const formTypes = ["all", "sports", "coaching"] as const
 
 export default function AdminHomePage() {
   const [submissions, setSubmissions] = useState<Submission[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("all")
+  const [formType, setFormType] = useState<(typeof formTypes)[number]>("all")
+  const [status, setStatus] = useState<(typeof statuses)[number]>("all")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
+
+  const query = useMemo(() => {
+    const params = new URLSearchParams()
+    if (formType !== "all") params.set("formType", formType)
+    if (status !== "all") params.set("status", status)
+    if (dateFrom) params.set("dateFrom", dateFrom)
+    if (dateTo) params.set("dateTo", dateTo)
+    return params.toString()
+  }, [dateFrom, dateTo, formType, status])
 
   useEffect(() => {
     async function load() {
+      setLoading(true)
+      setError(null)
+
       try {
-        const res = await fetch("/api/admin/submissions")
+        const res = await fetch(`/api/admin/submissions${query ? `?${query}` : ""}`)
         if (!res.ok) throw new Error("Failed to load")
         const data = await res.json()
-        console.log("First record:", JSON.stringify(data.submissions?.[0], null, 2))
         setSubmissions(data.submissions ?? [])
-      } catch (e) {
-        setError("Could not load submissions. Check AWS connection.")
+      } catch {
+        setError("Could not load submissions. Check the DynamoDB configuration.")
       } finally {
         setLoading(false)
       }
     }
+
     load()
-  }, [])
+  }, [query])
 
-  const allTypes = ["all", ...Array.from(new Set(submissions.map(getType)))]
-
-  const filtered = activeTab === "all"
-    ? submissions
-    : submissions.filter(s => getType(s) === activeTab)
-
-  const counts: Record<string, number> = { all: submissions.length }
-  submissions.forEach(s => {
-    const t = getType(s)
-    counts[t] = (counts[t] ?? 0) + 1
-  })
+  const exportHref = `/api/admin/submissions?${new URLSearchParams({
+    ...(formType !== "all" ? { formType } : {}),
+    ...(status !== "all" ? { status } : {}),
+    ...(dateFrom ? { dateFrom } : {}),
+    ...(dateTo ? { dateTo } : {}),
+    export: "csv",
+  }).toString()}`
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-semibold">Registrations</h2>
-        <p className="text-muted-foreground text-sm mt-1">
-          All submissions from athletes, coaches and academies
-        </p>
+    <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Admissions</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage Aspire Sports Academy and Aspire Defence Academy enquiries.
+          </p>
+        </div>
+        <Button asChild variant="outline">
+          <a href={exportHref}>Export CSV</a>
+        </Button>
       </div>
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {allTypes.map(tab => (
-          <div
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`cursor-pointer rounded-lg border p-4 transition-colors ${
-              activeTab === tab ? "border-primary bg-primary/5" : "hover:bg-muted/50"
-            }`}
+      <div className="grid gap-4 rounded-lg border bg-background p-4 md:grid-cols-4">
+        <label className="space-y-2 text-sm">
+          <span className="font-medium">Form type</span>
+          <select
+            value={formType}
+            onChange={(event) => setFormType(event.target.value as (typeof formTypes)[number])}
+            className="h-9 w-full rounded-md border bg-transparent px-3 text-sm"
           >
-            <p className="text-sm text-muted-foreground capitalize">{tab}</p>
-            <p className="text-2xl font-bold mt-1">{counts[tab] ?? 0}</p>
-          </div>
-        ))}
+            {formTypes.map((value) => (
+              <option key={value} value={value}>
+                {value === "all" ? "All" : value[0].toUpperCase() + value.slice(1)}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="space-y-2 text-sm">
+          <span className="font-medium">Status</span>
+          <select
+            value={status}
+            onChange={(event) => setStatus(event.target.value as (typeof statuses)[number])}
+            className="h-9 w-full rounded-md border bg-transparent px-3 text-sm"
+          >
+            {statuses.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="space-y-2 text-sm">
+          <span className="font-medium">From</span>
+          <Input type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} />
+        </label>
+
+        <label className="space-y-2 text-sm">
+          <span className="font-medium">To</span>
+          <Input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} />
+        </label>
       </div>
 
-      {/* Table */}
-      {loading ? (
-        <p className="text-muted-foreground text-sm">Loading submissions…</p>
-      ) : error ? (
-        <p className="text-red-500 text-sm">{error}</p>
-      ) : filtered.length === 0 ? (
-        <p className="text-muted-foreground text-sm">No submissions found.</p>
-      ) : (
-        <div className="overflow-x-auto rounded-lg border">
+      <div className="overflow-x-auto rounded-lg border bg-background">
+        {loading ? (
+          <p className="p-6 text-sm text-muted-foreground">Loading submissions...</p>
+        ) : error ? (
+          <p className="p-6 text-sm text-destructive">{error}</p>
+        ) : submissions.length === 0 ? (
+          <p className="p-6 text-sm text-muted-foreground">No submissions found.</p>
+        ) : (
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-3 font-medium">Type</th>
-                <th className="text-left px-4 py-3 font-medium">Name</th>
-                <th className="text-left px-4 py-3 font-medium">Email</th>
-                <th className="text-left px-4 py-3 font-medium">Phone</th>
-                <th className="text-left px-4 py-3 font-medium">Submitted</th>
-                <th className="text-left px-4 py-3 font-medium">Details</th>
+                <th className="px-4 py-3 text-left font-medium">Student</th>
+                <th className="px-4 py-3 text-left font-medium">Form</th>
+                <th className="px-4 py-3 text-left font-medium">Interest</th>
+                <th className="px-4 py-3 text-left font-medium">Contact</th>
+                <th className="px-4 py-3 text-left font-medium">Status</th>
+                <th className="px-4 py-3 text-left font-medium">Submitted</th>
+                <th className="px-4 py-3 text-left font-medium">Details</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((s, index) => {
-                const type = getType(s)
-                const id = getId(s, index)
-                console.log("Submission PK:", s.PK, "| getId:", id) 
-                return (
-                  <tr key={`${id}-${index}`} className="border-t hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-3">
-                      <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${TYPE_COLORS[type] ?? TYPE_COLORS.unknown}`}>
-                        {type}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-medium">{getName(s)}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{s.email ?? "—"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{s.phone ?? "—"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {s.createdAt
-                        ? new Date(s.createdAt).toLocaleString("en-IN", {
-                            day: "numeric", month: "short", year: "numeric",
-                            hour: "2-digit", minute: "2-digit",
-                          })
-                        : "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <a
-                       href={`/admin/submissions/detail?pk=${encodeURIComponent(s.PK ?? String(index))}`}
-                        onClick={() => console.log("Clicking with PK:", s.PK)}
-                        className="text-primary hover:underline text-xs font-medium"
-                      >
-                        View →
-                      </a>
-                    </td>
-                  </tr>
-                )
-              })}
+              {submissions.map((submission) => (
+                <tr key={submission.id} className="border-t">
+                  <td className="px-4 py-3">
+                    <p className="font-medium">{submission.studentFullName ?? "Unnamed"}</p>
+                    <p className="text-xs text-muted-foreground">{submission.parentGuardianName}</p>
+                  </td>
+                  <td className="px-4 py-3 capitalize">{submission.formType}</td>
+                  <td className="px-4 py-3">
+                    {submission.sportInterestedIn ?? submission.courseInterestedIn ?? "-"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <p>{submission.mobile ?? "-"}</p>
+                    <p className="text-xs text-muted-foreground">{submission.email}</p>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium">
+                      {submission.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {new Date(submission.createdAt).toLocaleString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link href={`/admin/submissions/${submission.id}`} className="font-medium text-primary hover:underline">
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

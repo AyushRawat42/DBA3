@@ -1,11 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
-
-const _geist = Geist({ subsets: ["latin"], weight: ["400", "500", "600", "700"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Aspire Academy | Sports & Defence Admissions",
@@ -41,7 +37,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={_geist.className}>{children}</body>
+      <body>{children}</body>
     </html>
   )
 }

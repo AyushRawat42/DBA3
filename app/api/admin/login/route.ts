@@ -10,9 +10,6 @@ const schema = z.object({
 })
 
 const sessions = new Map<string, string>() // in-memory for now; replace with DB
-const admin = getStaticAdmin()
-console.log("ADMIN FROM ENV", admin)
-
 export async function POST(req: Request) {
   const body = await req.json()
   const { email, password } = schema.parse(body)
@@ -21,8 +18,6 @@ export async function POST(req: Request) {
   if (!admin || admin.email !== email) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
   }
-
-  console.log("RAW HASH LENGTH", admin?.passwordHash?.length, admin?.passwordHash)
 
   const ok = await verifyPassword(password, admin.passwordHash)
   if (!ok) {
