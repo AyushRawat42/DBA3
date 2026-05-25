@@ -5,7 +5,7 @@ export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   if (pathname.startsWith("/admin")) {
-    const session = req.cookies.get("dba_admin_session")
+    const session = req.cookies.get("aspire_admin_session")
 
     if (!session && pathname !== "/admin/login") {
       const url = req.nextUrl.clone()

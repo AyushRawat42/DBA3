@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
   const res = NextResponse.json({ ok: true })
 
-  res.cookies.set("dba_admin_session", sessionId, {
+  res.cookies.set("aspire_admin_session", sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

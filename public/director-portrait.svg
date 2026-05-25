@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 720" role="img" aria-label="Major Harish Singh Kundwal portrait placeholder">
+  <rect width="640" height="720" fill="#eef2f7"/>
+  <circle cx="320" cy="230" r="110" fill="#cbd5e1"/>
+  <path d="M150 650c25-150 105-230 170-230s145 80 170 230" fill="#1e293b"/>
+  <path d="M195 650h250l-40-170H235l-40 170Z" fill="#0f766e"/>
+  <path d="M260 502h120" stroke="#facc15" stroke-width="12" stroke-linecap="round"/>
+  <text x="320" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#1e293b">Aspire Academy</text>
+</svg>

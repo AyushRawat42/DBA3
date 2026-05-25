@@ -87,7 +87,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-semibold text-secondary">Email</p>
-                  <p className="text-sm text-muted-foreground">admissions@aspireacademy.in</p>
+                  <p className="text-sm text-muted-foreground">boxing@hartishfoundation.in</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">

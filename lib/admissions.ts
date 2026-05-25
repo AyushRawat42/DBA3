@@ -30,7 +30,7 @@ export function toSubmissionKey(id: string) {
 
 export async function requireAdminCookie() {
   const cookieStore = await cookies()
-  const session = cookieStore.get("dba_admin_session")
+  const session = cookieStore.get("aspire_admin_session")
 
   if (!session?.value) {
     return false

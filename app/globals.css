@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Red, Navy Blue, White, Gold color scheme for boxing association */
+  /* Aspire Sports Academy and Aspire Defence Academy color system */
   --background: #ffffff;
   --foreground: #0a1f3d;
   --card: #ffffff;
