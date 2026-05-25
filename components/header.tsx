@@ -2,17 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X, Shield } from "lucide-react"
-
+import { Menu, X, Star } from "lucide-react"
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Register", href: "/register" },
-  { label: "Events", href: "/events" },
-  { label: "Championships", href: "/championships" },
-  { label: "News", href: "/news" },
-  { label: "Downloads", href: "/downloads" },
-  { label: "Safeguarding", href: "/safeguarding" },
+  { label: "Sports Academy", href: "/sports-academy" },
+  { label: "Defence Academy", href: "/defence-academy" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ]
 
@@ -20,21 +16,19 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white font-bold text-lg">
-              DBA
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white font-bold text-lg">
+              A
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-secondary">Dehradun Boxing</h1>
-              <p className="text-xs text-muted-foreground">Uttarakhand</p>
+            <div className="hidden sm:flex flex-col leading-tight">
+              <span className="text-sm font-semibold text-secondary">Aspire Academy</span>
+              <span className="text-xs text-muted-foreground">Sports & Defence Admissions</span>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
@@ -45,18 +39,17 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            {/* Desktop nav - after your existing navItems.map(...) */}
-            <Link
-              href="/admin/login"
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors ml-2 border-l pl-4"
-            >
-            <Shield className="h-3 w-3" />
-            Admin
-           </Link>
-
           </nav>
 
-          {/* Mobile Menu Button */}
+          <div className="hidden lg:flex items-center gap-3">
+            <Link href="/sports-registration" className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90">
+              Sports Admission
+            </Link>
+            <Link href="/coaching-registration" className="rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted">
+              Coaching Inquiry
+            </Link>
+          </div>
+
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden rounded-md p-2 text-foreground hover:bg-muted transition-colors"
@@ -66,9 +59,8 @@ export function Header() {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="border-t border-border pb-4 pt-2 lg:hidden">
+          <nav className="border-t border-border pb-4 pt-3 lg:hidden">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -79,14 +71,22 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link
-      href="/admin/login"
-      onClick={() => setIsOpen(false)}
-      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors py-2 border-t mt-2 pt-4 px-3"
-    >
-      <Shield className="h-4 w-4" />
-      Admin Login
-    </Link>
+            <div className="mt-3 space-y-2">
+              <Link
+                href="/sports-registration"
+                onClick={() => setIsOpen(false)}
+                className="block rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white text-center transition hover:bg-primary/90"
+              >
+                Sports Admission
+              </Link>
+              <Link
+                href="/coaching-registration"
+                onClick={() => setIsOpen(false)}
+                className="block rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground text-center transition hover:bg-muted"
+              >
+                Coaching Inquiry
+              </Link>
+            </div>
           </nav>
         )}
       </div>

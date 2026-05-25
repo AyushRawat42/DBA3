@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-// import { Header } from "@/components/header"
 
 import "./globals.css"
 
@@ -9,30 +8,30 @@ const _geist = Geist({ subsets: ["latin"], weight: ["400", "500", "600", "700"] 
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Dehradun Boxing Association | Uttarakhand",
+  title: "Aspire Academy | Sports & Defence Admissions",
   description:
-    "Official website of Dehradun Boxing Association. Athlete registration, events, championships, and safeguarding information for boxing in Uttarakhand.",
-  generator: "v0.app",
+    "Aspire Sports Academy and Aspire Defence Academy provide high-impact coaching, admissions guidance, and lead capture for students in Dehradun.",
+  generator: "Aspire Academy",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/aspire-sports-logo.svg",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/aspire-defence-logo.svg",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/icon.svg",
+        url: "/aspire-sports-logo.svg",
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/aspire-sports-logo.svg",
   },
   openGraph: {
-    title: "Dehradun Boxing Association",
-    description: "Official boxing association for Dehradun, Uttarakhand",
+    title: "Aspire Academy",
+    description: "Admissions and coaching for Aspire Sports Academy and Aspire Defence Academy",
     locale: "en_IN",
   },
 }
@@ -42,11 +41,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>
-        {/* <Header /> */}
-       
-        {children}
-      </body>
+      <body className={_geist.className}>{children}</body>
     </html>
   )
 }
