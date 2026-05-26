@@ -22,40 +22,49 @@ export async function GET(req: Request) {
   const exportFormat = searchParams.get("export")
 
   try {
-    const result = await db.send(
-      new ScanCommand({
-        TableName: TABLE_MAIN,
-        FilterExpression: "begins_with(PK, :prefix) AND SK = :meta",
-        ExpressionAttributeValues: {
-          ":prefix": "SUBMISSION#",
-          ":meta": "META",
-        },
-      })
-    )
+    const items = []
+    let exclusiveStartKey: Record<string, unknown> | undefined
 
-    let items = result.Items ?? []
+    do {
+      const result = await db.send(
+        new ScanCommand({
+          TableName: TABLE_MAIN,
+          ExclusiveStartKey: exclusiveStartKey,
+          FilterExpression: "begins_with(PK, :prefix) AND SK = :meta",
+          ExpressionAttributeValues: {
+            ":prefix": "SUBMISSION#",
+            ":meta": "META",
+          },
+        })
+      )
+
+      items.push(...(result.Items ?? []))
+      exclusiveStartKey = result.LastEvaluatedKey
+    } while (exclusiveStartKey)
+
+    let filteredItems = items
 
     if (formType && formType !== "all") {
       const parsed = formTypeSchema.safeParse(formType)
-      items = parsed.success ? items.filter((item) => item.formType === parsed.data) : []
+      filteredItems = parsed.success ? filteredItems.filter((item) => item.formType === parsed.data) : []
     }
 
     if (status && status !== "all") {
       const parsed = admissionStatusSchema.safeParse(status)
-      items = parsed.success ? items.filter((item) => item.status === parsed.data) : []
+      filteredItems = parsed.success ? filteredItems.filter((item) => item.status === parsed.data) : []
     }
 
     if (dateFrom) {
       const fromTime = new Date(`${dateFrom}T00:00:00.000Z`).getTime()
-      items = items.filter((item) => new Date(String(item.createdAt)).getTime() >= fromTime)
+      filteredItems = filteredItems.filter((item) => new Date(String(item.createdAt)).getTime() >= fromTime)
     }
 
     if (dateTo) {
       const toTime = new Date(`${dateTo}T23:59:59.999Z`).getTime()
-      items = items.filter((item) => new Date(String(item.createdAt)).getTime() <= toTime)
+      filteredItems = filteredItems.filter((item) => new Date(String(item.createdAt)).getTime() <= toTime)
     }
 
-    items.sort((a, b) => new Date(String(b.createdAt)).getTime() - new Date(String(a.createdAt)).getTime())
+    filteredItems.sort((a, b) => new Date(String(b.createdAt)).getTime() - new Date(String(a.createdAt)).getTime())
 
     if (exportFormat === "csv") {
       const columns = [
@@ -82,7 +91,7 @@ export async function GET(req: Request) {
 
       const csv = [
         columns.join(","),
-        ...items.map((item) => columns.map((column) => csvEscape(item[column])).join(",")),
+        ...filteredItems.map((item) => columns.map((column) => csvEscape(item[column])).join(",")),
       ].join("\n")
 
       return new Response(csv, {
@@ -93,7 +102,7 @@ export async function GET(req: Request) {
       })
     }
 
-    return NextResponse.json({ submissions: items })
+    return NextResponse.json({ submissions: filteredItems })
   } catch (error) {
     console.error("Admin admissions fetch error:", error)
     return NextResponse.json({ error: "Failed to fetch submissions" }, { status: 500 })

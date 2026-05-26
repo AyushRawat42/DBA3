@@ -3,6 +3,8 @@ import "server-only"
 import { cookies } from "next/headers"
 import { z } from "zod"
 
+import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "@/lib/admin-session.server"
+
 export const admissionStatuses = ["New", "Contacted", "Qualified", "Closed"] as const
 export const formTypes = ["sports", "coaching"] as const
 
@@ -30,11 +32,11 @@ export function toSubmissionKey(id: string) {
 
 export async function requireAdminCookie() {
   const cookieStore = await cookies()
-  const session = cookieStore.get("aspire_admin_session")
+  const session = cookieStore.get(ADMIN_SESSION_COOKIE)
 
   if (!session?.value) {
     return false
   }
 
-  return true
+  return verifyAdminSession(session.value)
 }

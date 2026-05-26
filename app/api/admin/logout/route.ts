@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { ADMIN_SESSION_COOKIE } from "@/lib/admin-session.server";
 
 export async function POST() {
   const cookieStore = await cookies();
 
-  cookieStore.set("aspire_admin_session", "", {
+  cookieStore.set(ADMIN_SESSION_COOKIE, "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
