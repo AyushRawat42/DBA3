@@ -1,20 +1,20 @@
 ﻿import Link from "next/link"
 import { Hero } from "@/components/hero"
 import { Card } from "@/components/ui/card"
-import { ArrowRight, Star, Shield, Target, Users } from "lucide-react"
+import { ArrowRight, Star, Shield, Users } from "lucide-react"
 
 const offerings = [
   {
     title: "Aspire Sports Academy",
     description: "Specialized coaching in badminton, swimming, skating, and more for young athletes.",
     href: "/sports-academy",
-    icon: Target,
+    image: "/aspire-sports.jpeg",
   },
   {
     title: "Aspire Defence Academy",
     description: "Entrance coaching and interview readiness for NDA, Sainik School, CDS, and defence exams.",
     href: "/defence-academy",
-    icon: Shield,
+    image: "/aspire-defence.jpeg",
   },
 ]
 
@@ -42,6 +42,17 @@ const programs = [
   {
     title: "Boxing",
     price: "₹1650/month",
+  },
+]
+
+const defencePrograms = [
+  {
+    title: "NDA / CDS / OTA / AFCAT",
+    price: "₹45000 for 5 months",
+  },
+  {
+    title: "Sainik School / RIMC / RMS CET",
+    price: "₹4500/month",
   },
 ]
 
@@ -79,13 +90,12 @@ export default function Home() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {offerings.map((item) => {
-            const OfferIcon = item.icon
             return (
               <Link key={item.title} href={item.href} className="group">
                 <Card className="h-full overflow-hidden border border-border transition hover:-translate-y-1 hover:shadow-lg">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-secondary">
-                      <OfferIcon size={24} />
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-secondary overflow-hidden">
+                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold text-secondary">{item.title}</h3>
@@ -146,6 +156,31 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid gap-10 lg:grid-cols-3">
+          <div className="lg:col-span-1">
+            <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs</p>
+            <h2 className="mt-4 text-3xl font-bold">Comprehensive defence admission courses.</h2>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Prepare for your defence entrance exams with structured courses designed for success.
+            </p>
+          </div>
+          <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
+            {defencePrograms.map((program) => (
+              <Card key={program.title} className="p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-xl font-semibold text-secondary">{program.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">Entrance coaching package.</p>
+                  </div>
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">{program.price}</span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-secondary/5 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
@@ -160,7 +195,7 @@ export default function Home() {
               </p>
             </div>
             <div className="rounded-4xl overflow-hidden border border-border bg-white shadow-sm">
-              <img src="/director-portrait.svg" alt="Major Harish Singh Kundwal" className="h-full w-full object-cover" />
+              <img src="/major-kundwal.jpg" alt="Major Harish Singh Kundwal" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>

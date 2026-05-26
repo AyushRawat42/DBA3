@@ -39,8 +39,8 @@ export function Hero() {
 
             <div className="grid gap-4 sm:grid-cols-3 pt-8 text-sm text-white/80">
               {[
-                { label: "Trusted Coaching", value: "10+ yrs" },
-                { label: "Success Rate", value: "95%" },
+                { label: "Trusted Coaching", value: "3+ yrs" },
+                { label: "Success Rate", value: "Proven" },
                 { label: "Admissions Support", value: "24/7" },
               ].map((item) => (
                 <div key={item.label} className="rounded-3xl border border-white/10 bg-white/5 p-4">

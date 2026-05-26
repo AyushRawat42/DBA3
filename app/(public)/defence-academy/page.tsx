@@ -8,6 +8,11 @@ const services = [
   { title: "Sainik school guidance", description: "Structured preparation for selection and admission interviews.", icon: CheckCircle2 },
 ]
 
+const defenceCourses = [
+  { title: "NDA / CDS / OTA / AFCAT", price: "₹45000 for 5 months" },
+  { title: "Sainik School / RIMC / RMS CET", price: "₹4500/month" },
+]
+
 export default function DefenceAcademyPage() {
   return (
     <main className="bg-background text-foreground">
@@ -18,6 +23,35 @@ export default function DefenceAcademyPage() {
           <p className="mx-auto mt-6 max-w-3xl text-base text-muted-foreground">
             Aspire Defence Academy combines exam coaching with hands-on personality development, interview practice, and fitness planning.
           </p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="flex justify-center">
+            <div className="w-full max-w-md">
+              <img src="/aspire-defence.jpeg" alt="Aspire Defence Academy" className="w-full h-auto rounded-2xl shadow-lg" />
+            </div>
+          </div>
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs</p>
+            <h2 className="mt-4 text-3xl font-bold">Defence coaching courses</h2>
+            <p className="mt-4 text-base text-muted-foreground">
+              Comprehensive courses designed to prepare you for defence entrance exams and interviews.
+            </p>
+            <div className="mt-6 space-y-3">
+              {defenceCourses.map((course) => (
+                <Card key={course.title} className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-base font-semibold text-secondary">{course.title}</h3>
+                    </div>
+                    <span className="rounded-full bg-secondary/10 px-3 py-1 text-sm font-semibold text-secondary whitespace-nowrap">{course.price}</span>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

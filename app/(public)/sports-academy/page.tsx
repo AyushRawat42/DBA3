@@ -8,6 +8,15 @@ const features = [
   { title: "Holistic development", description: "Fitness, nutrition, and confidence-building support.", icon: Shield },
 ]
 
+const sportsPrograms = [
+  { title: "Badminton", price: "₹2000/month" },
+  { title: "10m Air Rifle / Pistol Shooting", price: "₹3500/month" },
+  { title: "Swimming", price: "₹2500/month" },
+  { title: "Roller Skating", price: "₹1800/month" },
+  { title: "Pickleball", price: "₹1200/month" },
+  { title: "Boxing", price: "₹1650/month" },
+]
+
 export default function SportsAcademyPage() {
   return (
     <main className="bg-background text-foreground">
@@ -18,6 +27,35 @@ export default function SportsAcademyPage() {
           <p className="mx-auto mt-6 max-w-3xl text-base text-muted-foreground">
             Aspire Sports Academy offers structured coaching, modern facilities, and a performance-driven program to help athletes reach their full potential.
           </p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="flex justify-center">
+            <div className="w-full max-w-md">
+              <img src="/aspire-sports.jpeg" alt="Aspire Sports Academy" className="w-full h-auto rounded-2xl shadow-lg" />
+            </div>
+          </div>
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs</p>
+            <h2 className="mt-4 text-3xl font-bold">Monthly coaching packages</h2>
+            <p className="mt-4 text-base text-muted-foreground">
+              Choose from our range of sports programs with flexible pricing and schedules.
+            </p>
+            <div className="mt-6 space-y-3">
+              {sportsPrograms.map((program) => (
+                <Card key={program.title} className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-base font-semibold text-secondary">{program.title}</h3>
+                    </div>
+                    <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary whitespace-nowrap">{program.price}</span>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

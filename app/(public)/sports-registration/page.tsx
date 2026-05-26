@@ -13,8 +13,17 @@ export default function SportsRegistrationPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
-        <AthleteRegistrationForm />
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div className="flex justify-center">
+            <div className="w-full max-w-md">
+              <img src="/aspire-1.jpeg" alt="Aspire Academy" className="w-full h-auto rounded-2xl shadow-lg" />
+            </div>
+          </div>
+          <div>
+            <AthleteRegistrationForm />
+          </div>
+        </div>
       </section>
     </main>
   )

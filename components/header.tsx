@@ -21,7 +21,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white font-bold text-lg">
-              A
+              <img src="/aspire-1.jpeg" alt="Aspire Academy Logo" className="h-full w-full rounded-full object-cover" />
             </div>
             <div className="hidden sm:flex flex-col leading-tight">
               <span className="text-sm font-semibold text-secondary">Aspire Academy</span>
