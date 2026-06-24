@@ -1,6 +1,14 @@
 ﻿import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { pageImages } from "@/lib/page-images"
 import { ArrowRight, Star, Shield, Activity } from "lucide-react"
+
+const heroHighlights = [
+  { icon: Star, title: "Sports Programs", description: "Specialized coaching for modern youth sports." },
+  { icon: Activity, title: "Defence Prep", description: "Structured classes for defence entrance success." },
+  { icon: Shield, title: "Admission Support", description: "Application and interview coaching built-in." },
+]
 
 export function Hero() {
   return (
@@ -51,21 +59,34 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center">
-            <div className="grid w-full max-w-2xl gap-4 sm:grid-cols-2">
-              {[
-                { icon: Star, title: "Sports Programs", description: "Specialized coaching for modern youth sports." },
-                { icon: Activity, title: "Defence Prep", description: "Structured classes for defence entrance success." },
-                { icon: Shield, title: "Admission Support", description: "Application and interview coaching built-in." },
-              ].map((item) => {
+          <div className="space-y-4">
+            <div
+              className="relative w-full overflow-hidden rounded-2xl border border-white/20 shadow-lg"
+              style={{ aspectRatio: "4 / 3" }}
+            >
+              <Image
+                src={pageImages.homepage.hero}
+                alt="Aspire Academy campus in Dehradun"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {heroHighlights.map((item) => {
                 const Icon = item.icon
                 return (
-                  <div key={item.title} className="rounded-[28px] border border-white/10 bg-white/5 p-6 shadow-sm backdrop-blur-sm">
+                  <div
+                    key={item.title}
+                    className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-sm"
+                  >
                     <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white">
                       <Icon size={24} />
                     </div>
                     <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                    <p className="mt-2 text-white/80 text-sm">{item.description}</p>
+                    <p className="mt-2 text-sm text-white/80">{item.description}</p>
                   </div>
                 )
               })}

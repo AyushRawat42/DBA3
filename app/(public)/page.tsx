@@ -1,20 +1,27 @@
 ﻿import Link from "next/link"
 import { Hero } from "@/components/hero"
+import { HomeImageCarousel } from "@/components/home/home-image-carousel"
+import { PageImage } from "@/components/page-image"
 import { Card } from "@/components/ui/card"
-import { ArrowRight, Star, Shield, Users } from "lucide-react"
+import { pageImages } from "@/lib/page-images"
+import { ArrowRight } from "lucide-react"
 
 const offerings = [
   {
     title: "Aspire Sports Academy",
     description: "Specialized coaching in badminton, swimming, skating, and more for young athletes.",
     href: "/sports-academy",
-    image: "/aspire-sports.jpeg",
+    image: pageImages.homepage.offerings.sports,
+    thumb: pageImages.homepage.offerings.sportsThumb,
+    alt: "Young athletes at Aspire Sports Academy",
   },
   {
     title: "Aspire Defence Academy",
     description: "Entrance coaching and interview readiness for NDA, Sainik School, CDS, and defence exams.",
     href: "/defence-academy",
-    image: "/aspire-defence.jpeg",
+    image: pageImages.homepage.offerings.defence,
+    thumb: pageImages.homepage.offerings.defenceThumb,
+    alt: "Defence coaching aspirants at Aspire Defence Academy",
   },
 ]
 
@@ -56,24 +63,6 @@ const defencePrograms = [
   },
 ]
 
-const trustItems = [
-  {
-    icon: Users,
-    label: "Student Success",
-    value: "1000+",
-  },
-  {
-    icon: Star,
-    label: "Trusted Coaching",
-    value: "10+ Years",
-  },
-  {
-    icon: Shield,
-    label: "Exam Readiness",
-    value: "95% Pass Rate",
-  },
-]
-
 export default function Home() {
   return (
     <main className="bg-background text-foreground">
@@ -92,18 +81,27 @@ export default function Home() {
           {offerings.map((item) => {
             return (
               <Link key={item.title} href={item.href} className="group">
-                <Card className="h-full overflow-hidden border border-border transition hover:-translate-y-1 hover:shadow-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-secondary overflow-hidden">
-                      <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                <Card className="h-full overflow-hidden border border-border p-0 transition hover:-translate-y-1 hover:shadow-lg">
+                  <PageImage
+                    src={item.image}
+                    alt={item.alt}
+                    aspectRatio="16 / 9"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="rounded-none"
+                  />
+                  <div className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-primary/10 text-secondary">
+                        <img src={item.thumb} alt={item.title} className="h-full w-full object-cover" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold text-secondary">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-secondary">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
+                    <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                      Learn more <ArrowRight size={16} />
                     </div>
-                  </div>
-                  <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                    Learn more <ArrowRight size={16} />
                   </div>
                 </Card>
               </Link>
@@ -114,31 +112,25 @@ export default function Home() {
 
       <section className="bg-muted/70 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 md:grid-cols-3">
-            {trustItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Card key={item.label} className="p-8 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white">
-                    <Icon size={20} />
-                  </div>
-                  <p className="text-3xl font-bold text-secondary">{item.value}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">{item.label}</p>
-                </Card>
-              )
-            })}
-          </div>
+          <HomeImageCarousel images={pageImages.homepage.trustGallery} />
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid gap-10 lg:grid-cols-3">
+        <div className="grid gap-10 lg:grid-cols-3 lg:items-start">
           <div className="lg:col-span-1">
             <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs</p>
             <h2 className="mt-4 text-3xl font-bold">Top monthly offerings for sports aspirants.</h2>
             <p className="mt-4 text-sm text-muted-foreground">
               Choose the program that fits your energy, interests, and training schedule.
             </p>
+            <PageImage
+              src={pageImages.homepage.programsSports}
+              alt="Sports coaching session at Aspire Sports Academy"
+              aspectRatio="4 / 3"
+              sizes="(max-width: 1024px) 100vw, 33vw"
+              className="mt-6 rounded-2xl border border-border shadow-sm"
+            />
           </div>
           <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
             {programs.map((program) => (
@@ -157,13 +149,29 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid gap-10 lg:grid-cols-3">
+        <div className="grid gap-10 lg:grid-cols-3 lg:items-start">
           <div className="lg:col-span-1">
             <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs</p>
             <h2 className="mt-4 text-3xl font-bold">Comprehensive defence admission courses.</h2>
             <p className="mt-4 text-sm text-muted-foreground">
               Prepare for your defence entrance exams with structured courses designed for success.
             </p>
+            <div className="mt-6 grid gap-6 md:grid-cols-2 md:items-start">
+              <PageImage
+                src={pageImages.homepage.programsDefence}
+                alt="Colonel Manoj Singh Raghav, defence mentor at Aspire Defence Academy"
+                aspectRatio="3 / 4"
+                sizes="(max-width: 768px) 100vw, 16vw"
+                className="rounded-2xl border border-border bg-muted/40 shadow-sm"
+                imageClassName="object-contain"
+              />
+              <div className="min-w-0">
+                <h3 className="text-2xl font-bold text-secondary sm:text-3xl">Colonel Manoj Singh Raghav</h3>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Brings the experience, discipline, and guidance students need to prepare confidently for SSB interviews. As their mentor, he will help them develop the right mindset, communication, and officer-like qualities required to succeed.
+                </p>
+              </div>
+            </div>
           </div>
           <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
             {defencePrograms.map((program) => (
@@ -194,8 +202,13 @@ export default function Home() {
                 "Aspire Academy is designed to unlock potential through structured coaching, clear planning, and a supportive training environment."
               </p>
             </div>
-            <div className="rounded-4xl overflow-hidden border border-border bg-white shadow-sm">
-              <img src="/major-kundwal.jpg" alt="Major Harish Singh Kundwal" className="h-full w-full object-cover" />
+            <div className="rounded-2xl overflow-hidden border border-border bg-white shadow-sm">
+              <PageImage
+                src={pageImages.homepage.director}
+                alt="Major Harish Singh Kundwal, Director of Aspire Academy"
+                aspectRatio="4 / 5"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
           </div>
         </div>
@@ -215,6 +228,22 @@ export default function Home() {
               <Link href="/coaching-registration" className="block rounded-full border border-border px-6 py-3 text-center text-sm font-semibold text-foreground transition hover:bg-muted">
                 Join Defence Academy
               </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <PageImage
+                src={pageImages.homepage.cta.sports}
+                alt="Aspire Sports Academy training"
+                aspectRatio="3 / 2"
+                sizes="(max-width: 1024px) 50vw, 15vw"
+                className="rounded-2xl border border-border shadow-sm"
+              />
+              <PageImage
+                src={pageImages.homepage.cta.defence}
+                alt="Aspire Defence Academy coaching"
+                aspectRatio="3 / 2"
+                sizes="(max-width: 1024px) 50vw, 15vw"
+                className="rounded-2xl border border-border shadow-sm"
+              />
             </div>
           </div>
         </div>

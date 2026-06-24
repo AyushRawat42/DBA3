@@ -33,6 +33,16 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
+      <div className="border-t border-secondary-foreground/10">
+        <div className="mx-auto flex max-w-7xl justify-center px-4 py-4 sm:justify-end sm:px-6 lg:px-8">
+          <Link
+            href="/admin/login"
+            className="text-xs text-secondary-foreground/50 hover:text-secondary-foreground/75"
+          >
+            Admin Login
+          </Link>
+        </div>
+      </div>
     </footer>
   )
 }

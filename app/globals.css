@@ -124,3 +124,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes about-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.about-marquee-track {
+  animation: about-marquee 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-marquee-track {
+    animation: none;
+  }
+}
