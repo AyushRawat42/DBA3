@@ -81,7 +81,7 @@ export const pageImages = {
       defenceThumb: "/aspire-defence.jpeg",
     },
     programsSports: imagePath(imageFolders.sports, "DSC02629.jpg"),
-    programsDefence: "/images/colMSRaghav.jpeg",
+    programsDefence: imagePath(imageFolders.homepage, "colMSRaghav.jpeg"),
     director: imagePath(imageFolders.coaching, "major-kundwal.jpg"),
     cta: {
       sports: imagePath(imageFolders.sports, "DSC02830.jpg"),
