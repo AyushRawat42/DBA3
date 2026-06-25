@@ -11,11 +11,11 @@ const sportsFormImages = {
     alt: "Athletes training with energy at Aspire Sports Academy",
   },
   heroAccent: {
-    src: "/images/sports-form/DSC02638.jpg",
+    src: "/images/sports-form/DSC02445.jpg",
     alt: "Coached sports session at Aspire Sports Academy",
   },
   formSupport: {
-    src: "/images/sports-form/DSC02445.jpg",
+    src: "/images/sports-form/DSC02638.jpg",
     alt: "Aspire Sports Academy training environment in Dehradun",
   },
   proof: [
