@@ -32,11 +32,11 @@ export default function SportsAcademyPage() {
               Train like a champion. Start with the right program today.
             </h1>
             <p className="max-w-xl text-lg text-white/85">
-              Structured coaching across six sports — badminton, shooting, swimming, skating, pickleball, and boxing.
-              Professional facilities, monthly packages, and admissions support in Dehradun.
+              Structured coaching across seven sports — badminton, shooting, swimming, skating, pickleball, boxing, and
+              cricket. Professional facilities, monthly packages, and admissions support in Dehradun.
             </p>
             <div className="flex flex-wrap gap-3">
-              {["6 programs", "Monthly packages", "Coached sessions"].map((tag) => (
+              {["7 programs", "Monthly packages", "Coached sessions"].map((tag) => (
                 <span
                   key={tag}
                   className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold backdrop-blur-sm"
@@ -96,10 +96,10 @@ export default function SportsAcademyPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" id="programs">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs & pricing</p>
-          <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Choose your monthly coaching package</h2>
+          <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Choose your coaching program</h2>
           <p className="mt-4 text-muted-foreground">
-            Six sports. Clear monthly fees. Flexible schedules — pick the program that fits your goals and register in
-            minutes.
+            Seven sports. Monthly packages for most programs — cricket is charged per hour. Pick what fits your goals and
+            register in minutes.
           </p>
         </div>
 
@@ -116,7 +116,7 @@ export default function SportsAcademyPage() {
               <div className="space-y-3 p-5">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-lg font-semibold leading-snug text-secondary">{program.title}</h3>
-                  <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-sm font-bold text-white">
+                  <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-bold text-white sm:text-sm">
                     {program.price}
                   </span>
                 </div>
@@ -312,7 +312,7 @@ export default function SportsAcademyPage() {
               <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Admissions open</p>
               <h2 className="text-3xl font-bold sm:text-4xl">Take the first step toward sports admission today</h2>
               <p className="text-muted-foreground">
-                Register for badminton, swimming, skating, shooting, pickleball, or boxing. Our team will contact you
+                Register for badminton, swimming, skating, shooting, pickleball, boxing, or cricket. Our team will contact you
                 with program details, schedules, and enrollment steps.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

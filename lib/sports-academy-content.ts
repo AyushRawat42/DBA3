@@ -38,13 +38,19 @@ export const sportsPrograms = [
     title: "Pickleball",
     price: "₹1200/month",
     tagline: "Fun racket sport for all skill levels",
-    image: sportsImage("DSC02559.jpg", "Racket sports training at Aspire Sports Academy"),
+    image: sportsImage("pickleball.png", "Pickleball training at Aspire Sports Academy"),
   },
   {
     title: "Boxing",
     price: "₹1650/month",
     tagline: "Fitness, discipline & coached sparring",
     image: sportsImage("DSC02846.jpg", "Boxing coaching at Aspire Sports Academy"),
+  },
+  {
+    title: "Cricket",
+    price: "Charged per hour",
+    tagline: "Batting, bowling & fielding on outdoor turf",
+    image: sportsImage("DSC02984.jpg", "Cricket practice at Aspire Sports Academy"),
   },
 ] as const
 
@@ -64,7 +70,7 @@ export const sportsFeatures = [
 ] as const
 
 export const sportsTrustStats = [
-  { value: "6", label: "Sports programs" },
+  { value: "7", label: "Sports programs" },
   { value: "₹1200+", label: "Monthly packages from" },
   { value: "Dehradun", label: "Campus location" },
 ] as const
@@ -163,6 +169,5 @@ export const sportsLifeCarousel: GalleryImage[] = [
   sportsImage("DSC02634.jpg", "Young boxer at Aspire Sports Academy"),
   sportsImage("DSC02714.jpg", "Boxing pad work at Aspire Sports Academy"),
   sportsImage("DSC02973.jpg", "Outdoor cricket turf training at Aspire Sports Academy"),
-  sportsImage("DSC02984.jpg", "Cricket practice at Aspire Sports Academy"),
   sportsImage("DSC02525.jpg", "Roller skating obstacle training at Aspire Sports Academy"),
 ]

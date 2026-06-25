@@ -15,7 +15,7 @@ const sportsFormImages = {
     alt: "Coached sports session at Aspire Sports Academy",
   },
   formSupport: {
-    src: "/images/sports-form/DSC02418.jpg",
+    src: "/images/sports-form/DSC02445.jpg",
     alt: "Aspire Sports Academy training environment in Dehradun",
   },
   proof: [
@@ -38,7 +38,7 @@ const sportsFormImages = {
 } as const
 
 const trustPoints = [
-  "6 coached sports programs in Dehradun",
+  "7 coached sports programs in Dehradun",
   "Structured monthly training packages",
   "Personalized batch placement after review",
 ] as const

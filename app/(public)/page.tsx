@@ -29,26 +29,37 @@ const programs = [
   {
     title: "Badminton",
     price: "₹2000/month",
+    packageLabel: "Monthly coaching package.",
   },
   {
     title: "Air Rifle / Pistol Shooting",
     price: "₹3500/month",
+    packageLabel: "Monthly coaching package.",
   },
   {
     title: "Swimming",
     price: "₹2500/month",
+    packageLabel: "Monthly coaching package.",
   },
   {
     title: "Roller Skating",
     price: "₹1800/month",
+    packageLabel: "Monthly coaching package.",
   },
   {
     title: "Pickleball",
     price: "₹1200/month",
+    packageLabel: "Monthly coaching package.",
   },
   {
     title: "Boxing",
     price: "₹1650/month",
+    packageLabel: "Monthly coaching package.",
+  },
+  {
+    title: "Cricket",
+    price: "Charged per hour",
+    packageLabel: "Outdoor turf coaching sessions.",
   },
 ]
 
@@ -138,9 +149,11 @@ export default function Home() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="text-xl font-semibold text-secondary">{program.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">Monthly coaching package.</p>
+                    <p className="mt-2 text-sm text-muted-foreground">{program.packageLabel}</p>
                   </div>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">{program.price}</span>
+                  <span className="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary sm:text-sm">
+                    {program.price}
+                  </span>
                 </div>
               </Card>
             ))}
