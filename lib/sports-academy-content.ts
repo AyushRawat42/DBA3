@@ -38,7 +38,7 @@ export const sportsPrograms = [
     title: "Pickleball",
     price: "₹1200/month",
     tagline: "Fun racket sport for all skill levels",
-    image: sportsImage("pickleball.png", "Pickleball training at Aspire Sports Academy"),
+    image: sportsImage("pckball.jpeg", "Pickleball training at Aspire Sports Academy"),
   },
   {
     title: "Boxing",
