@@ -3,9 +3,13 @@ import { Card } from "@/components/ui/card"
 import { ArrowRight, Clock, Mail, MapPin, Navigation, Phone } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const PHONE = "+918250309184"
-const PHONE_DISPLAY = "+91-8250309184"
-const EMAIL = "boxing@hartishfoundation.in"
+const SPORTS_PHONE = "+918392858068"
+const SPORTS_PHONE_DISPLAY = "+91-8392858068"
+const DEFENCE_PHONE = "+917818874057"
+const DEFENCE_PHONE_DISPLAY = "+91-7818874057"
+const CALL_DISPLAY = `Sports Academy: ${SPORTS_PHONE_DISPLAY} · Defence coaching: ${DEFENCE_PHONE_DISPLAY}`
+const EMAIL = "harishkundwal8319@yahoo.com"
+const WHATSAPP_PHONE_DISPLAY = "+91-8250309184"
 const WHATSAPP_URL = "https://wa.me/918250309184"
 const ADDRESS =
   "7XFH+XMH, Mohabbewala, Dehradun, Ashkrodi, Uttarakhand 248002"
@@ -59,8 +63,8 @@ const contactActions = [
   {
     title: "Call us",
     description: "Speak with admissions for sports or defence coaching.",
-    value: PHONE_DISPLAY,
-    href: `tel:${PHONE}`,
+    value: CALL_DISPLAY,
+    href: `tel:${SPORTS_PHONE}`,
     icon: Phone,
     cta: "Tap to call",
     accent: "bg-primary",
@@ -77,7 +81,7 @@ const contactActions = [
   {
     title: "WhatsApp",
     description: "Quick questions? Message us directly on WhatsApp.",
-    value: PHONE_DISPLAY,
+    value: WHATSAPP_PHONE_DISPLAY,
     href: WHATSAPP_URL,
     icon: WhatsAppIcon,
     cta: "Open chat",
@@ -333,7 +337,7 @@ export default function ContactPage() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <a
-                      href={`tel:${PHONE}`}
+                      href={`tel:${SPORTS_PHONE}`}
                       className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
                     >
                       <Phone size={16} />
