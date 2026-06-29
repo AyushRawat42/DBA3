@@ -23,6 +23,12 @@ export const sportsPrograms = [
     image: sportsImage("DSC02643.jpg", "Air rifle shooting practice at Aspire Sports Academy"),
   },
   {
+    title: "25m Pistol Shooting",
+    price: "₹5000/month",
+    tagline: "3 days/week — advanced pistol coaching on a professional range",
+    image: sportsImage("25m02.jpeg", "25m pistol shooting training at Aspire Sports Academy"),
+  },
+  {
     title: "Swimming",
     price: "₹2500/month",
     tagline: "Stroke technique, pool fitness & water safety",
@@ -70,13 +76,13 @@ export const sportsFeatures = [
 ] as const
 
 export const sportsTrustStats = [
-  { value: "7", label: "Sports programs" },
+  { value: "8", label: "Sports programs" },
   { value: "₹1200+", label: "Monthly packages from" },
   { value: "Dehradun", label: "Campus location" },
 ] as const
 
 export const sportsHero = {
-  primary: sportsImage("DSC02616.jpg", "Indoor badminton courts at Aspire Sports Academy"),
+  primary: sportsImage("25m01.jpeg", "25m pistol shooting at Aspire Sports Academy"),
   accentTop: sportsImage("DSC02465.jpg", "Swimming coaching at Aspire Sports Academy"),
   accentBottom: sportsImage("DSC02732.jpg", "Boxing training at Aspire Sports Academy"),
 } as const

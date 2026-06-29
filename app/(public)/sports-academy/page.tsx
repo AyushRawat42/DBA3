@@ -36,7 +36,7 @@ export default function SportsAcademyPage() {
               cricket. Professional facilities, monthly packages, and admissions support in Dehradun.
             </p>
             <div className="flex flex-wrap gap-3">
-              {["7 programs", "Monthly packages", "Coached sessions"].map((tag) => (
+              {["8 programs", "Monthly packages", "Coached sessions"].map((tag) => (
                 <span
                   key={tag}
                   className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold backdrop-blur-sm"
@@ -58,14 +58,15 @@ export default function SportsAcademyPage() {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
-            <div className="relative aspect-[4/5] w-full sm:aspect-[5/6]">
+            <div className="relative aspect-[4/3] w-full">
               <PageImage
                 src={sportsHero.primary.src}
                 alt={sportsHero.primary.alt}
-                aspectRatio="auto"
+                aspectRatio="4 / 3"
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="absolute inset-0 rounded-3xl border border-white/20 shadow-2xl"
+                className="absolute inset-0 rounded-3xl border border-white/20 bg-white/10 shadow-2xl"
+                imageClassName="object-contain"
               />
               <div className="absolute -left-4 top-8 w-[38%] overflow-hidden rounded-2xl border border-white/20 shadow-xl sm:-left-8 sm:w-[34%]">
                 <PageImage
@@ -98,8 +99,8 @@ export default function SportsAcademyPage() {
           <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs & pricing</p>
           <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Choose your coaching program</h2>
           <p className="mt-4 text-muted-foreground">
-            Seven sports. Monthly packages for most programs — cricket is charged per hour. Pick what fits your goals and
-            register in minutes.
+            Eight programs. Monthly packages for most — cricket is charged per hour. Pick what fits your goals and register
+            in minutes.
           </p>
         </div>
 

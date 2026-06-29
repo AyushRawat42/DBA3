@@ -44,6 +44,7 @@ export const sportsRegistrationSchema = z.object({
   sportInterestedIn: z.enum([
     "Badminton",
     "Air Rifle / Pistol Shooting",
+    "25m Pistol Shooting",
     "Swimming",
     "Roller Skating",
     "Pickleball",
@@ -66,9 +67,9 @@ export const coachingRegistrationSchema = z.object({
   currentClass: z.string().min(1, "Class or current standard is required"),
   city: z.string().min(2, "City is required"),
   courseInterestedIn: z.enum([
-    "NDA / CDS / OTA / AFCAT",
+    "NDA/CDS/OTA/AFCAT (5 month crash course)",
     "Sainik School / RIMC / RMS CET",
-    "Sports Coaching & Fitness",
+    "NDA Foundation — Classes 11 & 12",
   ]),
   schoolName: optionalString(""),
   message: optionalString(""),

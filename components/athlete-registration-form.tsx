@@ -26,6 +26,7 @@ import {
 const sports = [
   "Badminton",
   "Air Rifle / Pistol Shooting",
+  "25m Pistol Shooting",
   "Swimming",
   "Roller Skating",
   "Pickleball",

@@ -12,20 +12,26 @@ export const DEFENCE_PRIMARY_CTA = {
 export const defencePrograms = [
   {
     title: "NDA / CDS / OTA / AFCAT",
-    price: "₹45000 for 5 months",
+    prices: ["₹25000 for 5 months", "₹6000/month"],
     tagline: "Written exam strategy, physical readiness planning, and SSB interview mentorship.",
     highlights: ["Structured syllabus coverage", "Mock tests & doubt sessions", "SSB preparation support"],
   },
   {
     title: "Sainik School / RIMC / RMS CET",
-    price: "₹4500/month",
+    prices: ["₹3150/month"],
     tagline: "Focused coaching for school entrance exams with interview and medical guidance.",
     highlights: ["Age-appropriate syllabus", "Interview readiness", "Admission pathway support"],
+  },
+  {
+    title: "NDA Foundation — Classes 11 & 12",
+    prices: ["₹3500/month"],
+    tagline: "Integrated tutoring for school courses and NDA entrance exam",
+    highlights: ["School syllabus support", "Early NDA preparation", "Structured weekly coaching"],
   },
 ] as const
 
 export const defenceTrustStats = [
-  { value: "2", label: "Defence coaching tracks" },
+  { value: "3", label: "Defence coaching tracks" },
   { value: "Officer-led", label: "Mentor guidance" },
   { value: "Dehradun", label: "Aspire campus" },
 ] as const

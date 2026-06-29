@@ -38,7 +38,7 @@ const sportsFormImages = {
 } as const
 
 const trustPoints = [
-  "7 coached sports programs in Dehradun",
+  "8 coached sports programs in Dehradun",
   "Structured monthly training packages",
   "Personalized batch placement after review",
 ] as const

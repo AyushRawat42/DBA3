@@ -37,6 +37,11 @@ const programs = [
     packageLabel: "Monthly coaching package.",
   },
   {
+    title: "25m Pistol Shooting",
+    price: "₹5000/month",
+    packageLabel: "3 days/week program.",
+  },
+  {
     title: "Swimming",
     price: "₹2500/month",
     packageLabel: "Monthly coaching package.",
@@ -66,11 +71,18 @@ const programs = [
 const defencePrograms = [
   {
     title: "NDA / CDS / OTA / AFCAT",
-    price: "₹45000 for 5 months",
+    packageLabel: "Crash course for entrance exam preparation.",
+    prices: ["₹25000 for 5 months", "₹6000/month"],
   },
   {
     title: "Sainik School / RIMC / RMS CET",
-    price: "₹4500/month",
+    packageLabel: "Integrated tutoring for school courses and defence entrance exams.",
+    prices: ["₹3150/month"],
+  },
+  {
+    title: "NDA Foundation Course (Classes 11 & 12)",
+    packageLabel: "Integrated tutoring for school courses and NDA entrance exam.",
+    prices: ["₹3500/month"],
   },
 ]
 
@@ -192,9 +204,20 @@ export default function Home() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="text-xl font-semibold text-secondary">{program.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">Entrance coaching package.</p>
+                    <p className="mt-2 text-sm text-muted-foreground">{program.packageLabel}</p>
                   </div>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">{program.price}</span>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    {program.prices.map((price, index) => (
+                      <div key={price} className="flex flex-col items-end gap-1">
+                        {index > 0 && (
+                          <span className="text-xs font-medium text-muted-foreground">or</span>
+                        )}
+                        <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+                          {price}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </Card>
             ))}
@@ -204,21 +227,42 @@ export default function Home() {
 
       <section className="bg-secondary/5 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
             <div className="space-y-6">
               <p className="text-sm uppercase tracking-[0.3em] text-primary">Director's Note</p>
-              <h2 className="text-3xl font-bold">Major Harish Singh Kundwal</h2>
-              <p className="text-muted-foreground">
-                With a disciplined background in defence and coaching, Major Kundwal champions a practical admissions path for both sports and defence aspirants. His approach blends performance training, confidence building, and strategic guidance for every student.
-              </p>
-              <p className="text-sm text-muted-foreground">
-                "Aspire Academy is designed to unlock potential through structured coaching, clear planning, and a supportive training environment."
-              </p>
+              <h2 className="text-3xl font-bold">Major (Retd) Harish Singh Kundwal</h2>
+              <div className="space-y-4 text-muted-foreground">
+                <p>
+                  Major (Retd) Harish Singh Kundwal is the Founder and Director of Aspire Sports Academy and Aspire Defence Academy, Dehradun. A disciplined leader, mentor, and sports promoter, he is dedicated to shaping the youth of India through sports, education, fitness, and defence-oriented training.
+                </p>
+                <p>
+                  With a strong defence background and passion for nation-building, Major Harish Singh Kundwal believes that true success is built on discipline, consistency, physical fitness, mental strength, and leadership. His vision is to create an environment where students and athletes can grow not only as competitors, but also as confident and responsible citizens.
+                </p>
+                <p>
+                  Under his leadership, Aspire Sports Academy has developed into a multi-sports platform that promotes Olympic sports, fitness culture, and professional coaching in disciplines such as shooting, boxing, swimming, cricket, badminton, roller skating, and pickleball. At the same time, Aspire Defence Academy has guided numerous students toward careers in the Armed Forces through NDA, CDS, AFCAT, SSB, and foundation coaching programs.
+                </p>
+                <p>Major Kundwal is especially known for:</p>
+                <ul className="list-disc space-y-1 pl-5">
+                  <li>Promoting discipline through sports and defence education</li>
+                  <li>Encouraging youth participation in Olympic sports</li>
+                  <li>Supporting grassroots athlete development</li>
+                  <li>Creating structured training systems for students and players</li>
+                  <li>Mentoring young aspirants with leadership and motivational guidance</li>
+                  <li>Combining physical fitness with academic and personality development</li>
+                </ul>
+                <p>His mission is simple yet powerful:</p>
+                <p className="font-medium text-foreground">
+                  &ldquo;Build strong bodies, disciplined minds, and future leaders for the nation.&rdquo;
+                </p>
+                <p>
+                  Through Aspire Sports Academy and Aspire Defence Academy, Major (Retd) Harish Singh Kundwal continues to inspire young athletes and defence aspirants to dream bigger, work harder, and serve the nation with pride and dedication.
+                </p>
+              </div>
             </div>
             <div className="rounded-2xl overflow-hidden border border-border bg-white shadow-sm">
               <PageImage
                 src={pageImages.homepage.director}
-                alt="Major Harish Singh Kundwal, Director of Aspire Academy"
+                alt="Major (Retd) Harish Singh Kundwal, Founder and Director of Aspire Academy"
                 aspectRatio="4 / 5"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />

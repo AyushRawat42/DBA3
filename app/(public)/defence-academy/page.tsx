@@ -90,12 +90,12 @@ export default function DefenceAcademyPage() {
           <p className="text-sm uppercase tracking-[0.3em] text-primary/80">Programs & fees</p>
           <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Defence coaching programs for 2026</h2>
           <p className="mt-4 text-muted-foreground">
-            Two clear coaching tracks — entrance exam preparation for defence academies and school-level defence
-            pathways. Fees are transparent so you can plan with confidence.
+            Three clear coaching tracks — entrance exam preparation for defence academies, school-level defence
+            pathways, and foundation coaching for Classes 11 & 12. Fees are transparent so you can plan with confidence.
           </p>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        <div className="mt-10 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
           {defencePrograms.map((program) => (
             <Card
               key={program.title}
@@ -107,9 +107,16 @@ export default function DefenceAcademyPage() {
                     <h3 className="text-xl font-bold text-secondary sm:text-2xl">{program.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">{program.tagline}</p>
                   </div>
-                  <span className="shrink-0 self-start rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-white">
-                    {program.price}
-                  </span>
+                  <div className="flex shrink-0 flex-col items-start gap-1.5 self-start">
+                    {program.prices.map((price, index) => (
+                      <span
+                        key={price}
+                        className="rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-white"
+                      >
+                        {program.prices.length > 1 && index === 1 ? `or ${price}` : price}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
               <ul className="space-y-3 px-6 py-5">

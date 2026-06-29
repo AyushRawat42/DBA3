@@ -24,9 +24,9 @@ import {
 } from "@/lib/validations"
 
 const courses = [
-  "NDA / CDS / OTA / AFCAT",
+  "NDA/CDS/OTA/AFCAT (5 month crash course)",
   "Sainik School / RIMC / RMS CET",
-  "Sports Coaching & Fitness",
+  "NDA Foundation — Classes 11 & 12",
 ] as const
 
 export function CoachingRegistrationForm() {
