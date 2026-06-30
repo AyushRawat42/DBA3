@@ -26,7 +26,7 @@ export const sportsPrograms = [
     title: "25m Pistol Shooting",
     price: "₹5000/month",
     tagline: "3 days/week — advanced pistol coaching on a professional range",
-    image: sportsImage("25m02.jpeg", "25m pistol shooting training at Aspire Sports Academy"),
+    image: sportsImage("25m03.jpeg", "25m pistol shooting training at Aspire Sports Academy"),
   },
   {
     title: "Swimming",
