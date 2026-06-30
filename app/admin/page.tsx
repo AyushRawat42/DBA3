@@ -47,7 +47,15 @@ export default function AdminHomePage() {
       setError(null)
 
       try {
-        const res = await fetch(`/api/admin/submissions${query ? `?${query}` : ""}`)
+        const res = await fetch(`/api/admin/submissions${query ? `?${query}` : ""}`, {
+          credentials: "include",
+        })
+
+        if (res.status === 401) {
+          window.location.href = `/admin/login?from=${encodeURIComponent("/admin")}`
+          return
+        }
+
         if (!res.ok) throw new Error("Failed to load")
         const data = await res.json()
         setSubmissions(data.submissions ?? [])

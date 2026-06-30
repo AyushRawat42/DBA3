@@ -1,29 +1,28 @@
 import { NextResponse } from "next/server"
 import { PutCommand } from "@aws-sdk/lib-dynamodb"
-import { z } from "zod"
 
-import { toSubmissionKey } from "@/lib/admissions"
+import { createSubmissionItem, parseSubmissionBody } from "@/lib/admissions"
 import { db, TABLE_MAIN } from "@/lib/dynamodb"
 import { sportsRegistrationSchema } from "@/lib/validations"
 
 export async function POST(req: Request) {
-  try {
-    const body = await req.json()
-    const fields = sportsRegistrationSchema.parse(body)
-    const id = crypto.randomUUID()
-    const now = new Date().toISOString()
+  const parsed = await parseSubmissionBody(req, sportsRegistrationSchema)
 
-    const item = {
-      ...toSubmissionKey(id),
-      id,
-      formType: "sports",
-      createdAt: now,
-      updatedAt: now,
-      status: "New",
-      notes: "",
-      ...fields,
+  if (!parsed.ok) {
+    if (parsed.reason === "invalid_json") {
+      return NextResponse.json({ error: "Invalid submission" }, { status: 400 })
     }
 
+    return NextResponse.json(
+      { error: "Invalid submission", issues: parsed.issues },
+      { status: 400 }
+    )
+  }
+
+  const id = crypto.randomUUID()
+  const item = createSubmissionItem(id, "sports", parsed.data)
+
+  try {
     await db.send(
       new PutCommand({
         TableName: TABLE_MAIN,
@@ -31,14 +30,10 @@ export async function POST(req: Request) {
         ConditionExpression: "attribute_not_exists(PK)",
       })
     )
-
-    return NextResponse.json({ ok: true, submission: item }, { status: 201 })
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid submission", issues: error.flatten() }, { status: 400 })
-    }
-
     console.error("Sports admission submission error:", error)
     return NextResponse.json({ error: "Failed to save submission" }, { status: 500 })
   }
+
+  return NextResponse.json({ ok: true }, { status: 201 })
 }

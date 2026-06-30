@@ -1,12 +1,28 @@
 import { NextResponse } from "next/server"
 import { ScanCommand } from "@aws-sdk/lib-dynamodb"
 
-import { formTypeSchema, requireAdminCookie, admissionStatusSchema } from "@/lib/admissions"
+import {
+  admissionStatusSchema,
+  formTypeSchema,
+  normalizeSubmissionItem,
+  requireAdminCookie,
+} from "@/lib/admissions"
 import { db, TABLE_MAIN } from "@/lib/dynamodb"
 
 function csvEscape(value: unknown) {
   const text = value == null ? "" : String(value)
   return `"${text.replace(/"/g, '""')}"`
+}
+
+function parseFilterDate(value: string, endOfDay: boolean) {
+  const parsed = new Date(`${value}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}Z`)
+  const time = parsed.getTime()
+
+  if (Number.isNaN(time)) {
+    return null
+  }
+
+  return time
 }
 
 export async function GET(req: Request) {
@@ -21,8 +37,24 @@ export async function GET(req: Request) {
   const dateTo = searchParams.get("dateTo")
   const exportFormat = searchParams.get("export")
 
+  if (formType && formType !== "all" && !formTypeSchema.safeParse(formType).success) {
+    return NextResponse.json({ error: "Invalid formType filter" }, { status: 400 })
+  }
+
+  if (status && status !== "all" && !admissionStatusSchema.safeParse(status).success) {
+    return NextResponse.json({ error: "Invalid status filter" }, { status: 400 })
+  }
+
+  if (dateFrom && parseFilterDate(dateFrom, false) === null) {
+    return NextResponse.json({ error: "Invalid dateFrom filter" }, { status: 400 })
+  }
+
+  if (dateTo && parseFilterDate(dateTo, true) === null) {
+    return NextResponse.json({ error: "Invalid dateTo filter" }, { status: 400 })
+  }
+
   try {
-    const items = []
+    const items: Record<string, unknown>[] = []
     let exclusiveStartKey: Record<string, unknown> | undefined
 
     do {
@@ -38,33 +70,39 @@ export async function GET(req: Request) {
         })
       )
 
-      items.push(...(result.Items ?? []))
+      items.push(...((result.Items ?? []) as Record<string, unknown>[]))
       exclusiveStartKey = result.LastEvaluatedKey
     } while (exclusiveStartKey)
 
-    let filteredItems = items
+    let filteredItems = items.map(normalizeSubmissionItem)
 
     if (formType && formType !== "all") {
-      const parsed = formTypeSchema.safeParse(formType)
-      filteredItems = parsed.success ? filteredItems.filter((item) => item.formType === parsed.data) : []
+      const parsed = formTypeSchema.parse(formType)
+      filteredItems = filteredItems.filter((item) => item.formType === parsed)
     }
 
     if (status && status !== "all") {
-      const parsed = admissionStatusSchema.safeParse(status)
-      filteredItems = parsed.success ? filteredItems.filter((item) => item.status === parsed.data) : []
+      const parsed = admissionStatusSchema.parse(status)
+      filteredItems = filteredItems.filter((item) => item.status === parsed)
     }
 
     if (dateFrom) {
-      const fromTime = new Date(`${dateFrom}T00:00:00.000Z`).getTime()
-      filteredItems = filteredItems.filter((item) => new Date(String(item.createdAt)).getTime() >= fromTime)
+      const fromTime = parseFilterDate(dateFrom, false)!
+      filteredItems = filteredItems.filter(
+        (item) => new Date(String(item.createdAt)).getTime() >= fromTime
+      )
     }
 
     if (dateTo) {
-      const toTime = new Date(`${dateTo}T23:59:59.999Z`).getTime()
-      filteredItems = filteredItems.filter((item) => new Date(String(item.createdAt)).getTime() <= toTime)
+      const toTime = parseFilterDate(dateTo, true)!
+      filteredItems = filteredItems.filter(
+        (item) => new Date(String(item.createdAt)).getTime() <= toTime
+      )
     }
 
-    filteredItems.sort((a, b) => new Date(String(b.createdAt)).getTime() - new Date(String(a.createdAt)).getTime())
+    filteredItems.sort(
+      (a, b) => new Date(String(b.createdAt)).getTime() - new Date(String(a.createdAt)).getTime()
+    )
 
     if (exportFormat === "csv") {
       const columns = [
@@ -86,6 +124,7 @@ export async function GET(req: Request) {
         "schoolName",
         "previousExperience",
         "message",
+        "consent",
         "notes",
       ]
 

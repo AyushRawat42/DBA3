@@ -16,23 +16,67 @@ type Submission = Record<string, unknown> & {
 }
 
 const statuses = ["New", "Contacted", "Qualified", "Closed"] as const
-const hiddenFields = new Set(["PK", "SK", "id", "updatedAt"])
+const hiddenFields = new Set([
+  "PK",
+  "SK",
+  "id",
+  "updatedAt",
+  "notes",
+  "status",
+  "formType",
+  "createdAt",
+])
+
+function redirectToLogin() {
+  const from = encodeURIComponent(window.location.pathname)
+  window.location.href = `/admin/login?from=${from}`
+}
 
 export default function AdminSubmissionDetailPage() {
   const params = useParams()
   const id = String(params.regId)
   const [submission, setSubmission] = useState<Submission | null>(null)
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
       setLoading(true)
+      setLoadError(null)
+
       try {
-        const res = await fetch(`/api/admin/submissions/detail?id=${encodeURIComponent(id)}`)
+        const res = await fetch(`/api/admin/submissions/detail?id=${encodeURIComponent(id)}`, {
+          credentials: "include",
+        })
+
+        if (res.status === 401) {
+          redirectToLogin()
+          return
+        }
+
+        if (res.status === 404) {
+          setSubmission(null)
+          setLoadError("Submission not found.")
+          return
+        }
+
+        if (!res.ok) {
+          setSubmission(null)
+          setLoadError("Could not load submission.")
+          return
+        }
+
         const data = await res.json()
-        setSubmission(data.submission)
+        setSubmission(data.submission ?? null)
+
+        if (!data.submission) {
+          setLoadError("Submission not found.")
+        }
+      } catch {
+        setSubmission(null)
+        setLoadError("Could not load submission.")
       } finally {
         setLoading(false)
       }
@@ -51,8 +95,14 @@ export default function AdminSubmissionDetailPage() {
       const res = await fetch(`/api/admin/submissions/${encodeURIComponent(submission.id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(updates),
       })
+
+      if (res.status === 401) {
+        redirectToLogin()
+        return
+      }
 
       if (!res.ok) throw new Error("Failed to save")
       const data = await res.json()
@@ -70,7 +120,7 @@ export default function AdminSubmissionDetailPage() {
   }
 
   if (!submission) {
-    return <p className="p-6 text-sm text-destructive">Submission not found.</p>
+    return <p className="p-6 text-sm text-destructive">{loadError ?? "Submission not found."}</p>
   }
 
   const fields = Object.entries(submission).filter(([key]) => !hiddenFields.has(key))

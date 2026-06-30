@@ -1,17 +1,24 @@
 import "server-only"
 
 import { createHmac, timingSafeEqual } from "crypto"
+import { adminSessionSecret } from "@/lib/env"
 
 export const ADMIN_SESSION_COOKIE = "aspire_admin_session"
 export const ADMIN_SESSION_MAX_AGE_SECONDS = 60 * 60 * 8
 
+export function getAdminSessionCookieOptions(maxAge: number) {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge,
+  }
+}
+
 type AdminSessionPayload = {
   adminId: string
   expiresAt: number
-}
-
-function getSessionSecret() {
-  return process.env.ADMIN_SESSION_SECRET ?? process.env.ADMIN_PASSWORD_HASH ?? "local-admin-session-secret"
 }
 
 function encodePayload(payload: AdminSessionPayload) {
@@ -19,10 +26,14 @@ function encodePayload(payload: AdminSessionPayload) {
 }
 
 function sign(value: string) {
-  return createHmac("sha256", getSessionSecret()).update(value).digest("base64url")
+  return createHmac("sha256", adminSessionSecret).update(value).digest("base64url")
 }
 
 export function createAdminSession(adminId: string) {
+  if (!adminSessionSecret) {
+    return null
+  }
+
   const payload = encodePayload({
     adminId,
     expiresAt: Date.now() + ADMIN_SESSION_MAX_AGE_SECONDS * 1000,
@@ -32,6 +43,10 @@ export function createAdminSession(adminId: string) {
 }
 
 export function verifyAdminSession(sessionToken: string) {
+  if (!adminSessionSecret) {
+    return false
+  }
+
   const [payload, signature] = sessionToken.split(".")
 
   if (!payload || !signature) {

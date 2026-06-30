@@ -26,6 +26,7 @@ function LoginContent() {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       })
       if (!res.ok) {
@@ -34,6 +35,8 @@ function LoginContent() {
         return
       }
       router.push(from)
+    } catch {
+      setError("Login failed")
     } finally {
       setLoading(false)
     }

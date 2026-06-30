@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server"
 import { GetCommand } from "@aws-sdk/lib-dynamodb"
 
-import { requireAdminCookie, toSubmissionKey } from "@/lib/admissions"
+import {
+  normalizeSubmissionId,
+  normalizeSubmissionItem,
+  requireAdminCookie,
+  toSubmissionKey,
+} from "@/lib/admissions"
 import { db, TABLE_MAIN } from "@/lib/dynamodb"
 
 export async function GET(req: Request) {
@@ -10,7 +15,7 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url)
-  const id = searchParams.get("id") ?? searchParams.get("pk")?.replace(/^SUBMISSION#/, "")
+  const id = normalizeSubmissionId(searchParams.get("id") ?? searchParams.get("pk"))
 
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 })
@@ -24,7 +29,13 @@ export async function GET(req: Request) {
       })
     )
 
-    return NextResponse.json({ submission: result.Item ?? null })
+    if (!result.Item) {
+      return NextResponse.json({ error: "Submission not found" }, { status: 404 })
+    }
+
+    return NextResponse.json({
+      submission: normalizeSubmissionItem(result.Item as Record<string, unknown>),
+    })
   } catch (error) {
     console.error("Admin admission detail fetch error:", error)
     return NextResponse.json({ error: "Failed to fetch submission" }, { status: 500 })

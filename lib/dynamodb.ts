@@ -1,8 +1,6 @@
 import "server-only"
 import { ddbDoc } from "@/lib/aws.server"
+import { TABLE_MAIN } from "@/lib/env"
 
 export const db = ddbDoc
-export const TABLE_MAIN =
-  process.env.ADMISSIONS_TABLE_NAME ??
-  process.env.DDB_TABLE_MAIN ??
-  "AspireAdmissions"
+export { TABLE_MAIN }
