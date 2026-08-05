@@ -76,9 +76,9 @@ export const pageImages = {
     ],
     offerings: {
       sports: imagePath(imageFolders.sports, "DSC02882.jpg"),
-      sportsThumb: "/aspire-sports-logo.svg",
+      sportsThumb: "/aspire-logo.png",
       defence: imagePath(imageFolders.homepage, "IMG_5136.jpg"),
-      defenceThumb: "/aspire-defence-logo.svg",
+      defenceThumb: "/aspire-defence-logo.png",
     },
     programsSports: imagePath(imageFolders.sports, "DSC02629.jpg"),
     programsDefence: imagePath(imageFolders.homepage, "colMSRaghav.jpeg"),

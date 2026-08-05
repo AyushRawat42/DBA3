@@ -8,23 +8,6 @@ export const metadata: Metadata = {
   description:
     "Aspire Sports Academy and Aspire Defence Academy provide high-impact coaching, admissions guidance, and lead capture for students in Dehradun.",
   generator: "Aspire Academy",
-  icons: {
-    icon: [
-      {
-        url: "/aspire-sports-logo.svg",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/aspire-defence-logo.svg",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/aspire-sports-logo.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/aspire-sports-logo.svg",
-  },
   openGraph: {
     title: "Aspire Academy",
     description: "Admissions and coaching for Aspire Sports Academy and Aspire Defence Academy",

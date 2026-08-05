@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { Menu, X, Star } from "lucide-react"
 
@@ -20,15 +21,15 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white font-bold text-lg">
-              <img
-                src="/aspire-sports-logo.svg"
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+              <Image
+                src="/aspire-logo.png"
                 alt="Aspire Academy logo"
                 width={40}
                 height={40}
                 loading="eager"
                 decoding="async"
-                className="h-full w-full rounded-full object-cover"
+                className="h-full w-full object-contain"
               />
             </div>
             <div className="hidden sm:flex flex-col leading-tight">
