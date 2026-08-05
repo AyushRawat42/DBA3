@@ -58,7 +58,7 @@ export const pageImages = {
         alt: "Campus life at Aspire Academy in Dehradun",
       },
       {
-        src: imagePath(imageFolders.homepage, "DSC02416.jpg"),
+        src: imagePath(imageFolders.sports, "DSC02416.jpg"),
         alt: "Students at Aspire Academy programs",
       },
       {
@@ -76,9 +76,9 @@ export const pageImages = {
     ],
     offerings: {
       sports: imagePath(imageFolders.sports, "DSC02882.jpg"),
-      sportsThumb: "/aspire-sports.jpeg",
-      defence: imagePath(imageFolders.homepage, "IMG_5136.png"),
-      defenceThumb: "/aspire-defence.jpeg",
+      sportsThumb: "/aspire-sports-logo.svg",
+      defence: imagePath(imageFolders.homepage, "IMG_5136.jpg"),
+      defenceThumb: "/aspire-defence-logo.svg",
     },
     programsSports: imagePath(imageFolders.sports, "DSC02629.jpg"),
     programsDefence: imagePath(imageFolders.homepage, "colMSRaghav.jpeg"),

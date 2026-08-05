@@ -115,7 +115,15 @@ export default function Home() {
                   <div className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-primary/10 text-secondary">
-                        <img src={item.thumb} alt={item.title} className="h-full w-full object-cover" />
+                        <img
+                          src={item.thumb}
+                          alt={item.title}
+                          width={56}
+                          height={56}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-cover"
+                        />
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold text-secondary">{item.title}</h3>

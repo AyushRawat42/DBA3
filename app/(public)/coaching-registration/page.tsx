@@ -14,11 +14,11 @@ import {
 
 const coachingFormImages = {
   foundation: {
-    src: "/images/coaching-form/IMG_5136.png",
+    src: "/images/coaching-form/IMG_5136.jpg",
     alt: "Aspire Defence Academy NDA foundation coaching — structured preparation from Class 11",
   },
   pathways: {
-    src: "/images/coaching-form/Gemini_Generated_Image_fr0pkkfr0pkkfr0p.png",
+    src: "/images/coaching-form/Gemini_Generated_Image_fr0pkkfr0pkkfr0p.jpg",
     alt: "Aspire Defence Academy — Army, Navy, and Air Force entrance exam coaching pathways",
   },
 } as const
