@@ -57,6 +57,7 @@ export function AthleteRegistrationForm() {
       previousExperience: "",
       message: "",
       consent: false,
+      _gotcha: "",
     },
   })
 
@@ -65,10 +66,10 @@ export function AthleteRegistrationForm() {
     setSubmitError(null)
 
     try {
-      const res = await fetch("/api/submissions/sports", {
+      const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, formType: "athlete-registration-form" }),
       })
 
       if (!res.ok) {
@@ -102,6 +103,15 @@ export function AthleteRegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 rounded-lg border bg-background p-6 shadow-sm">
+      <div className="absolute -left-[9999px]" aria-hidden="true">
+        <label htmlFor="athlete-gotcha">Leave this field empty</label>
+        <Input
+          {...register("_gotcha")}
+          id="athlete-gotcha"
+          autoComplete="off"
+          tabIndex={-1}
+        />
+      </div>
       <div>
         <h2 className="text-xl font-semibold">Sports admission details</h2>
         <p className="mt-1 text-sm text-muted-foreground">

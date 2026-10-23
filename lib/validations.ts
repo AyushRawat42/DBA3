@@ -34,6 +34,7 @@ const optionalPhone = z.preprocess(
 )
 
 export const sportsRegistrationSchema = z.object({
+  _gotcha: z.string().optional(),
   studentFullName: z.string().min(2, "Student full name is required"),
   parentGuardianName: z.string().min(2, "Parent or guardian name is required"),
   mobile: z.string().regex(PHONE_REGEX, "Mobile number must be valid"),
@@ -59,6 +60,7 @@ export const sportsRegistrationSchema = z.object({
 export type SportsRegistrationData = z.infer<typeof sportsRegistrationSchema>
 
 export const coachingRegistrationSchema = z.object({
+  _gotcha: z.string().optional(),
   studentFullName: z.string().min(2, "Student full name is required"),
   parentGuardianName: z.string().min(2, "Parent or guardian name is required"),
   mobile: z.string().regex(PHONE_REGEX, "Mobile number must be valid"),

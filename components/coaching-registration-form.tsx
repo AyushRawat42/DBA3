@@ -53,6 +53,7 @@ export function CoachingRegistrationForm() {
       schoolName: "",
       message: "",
       consent: false,
+      _gotcha: "",
     },
   })
 
@@ -61,10 +62,10 @@ export function CoachingRegistrationForm() {
     setSubmitError(null)
 
     try {
-      const res = await fetch("/api/submissions/coaching", {
+      const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, formType: "coaching-registration-form" }),
       })
 
       if (!res.ok) {
@@ -98,6 +99,15 @@ export function CoachingRegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 rounded-lg border bg-background p-6 shadow-sm">
+      <div className="absolute -left-[9999px]" aria-hidden="true">
+        <label htmlFor="coaching-gotcha">Leave this field empty</label>
+        <Input
+          {...register("_gotcha")}
+          id="coaching-gotcha"
+          autoComplete="off"
+          tabIndex={-1}
+        />
+      </div>
       <div>
         <h2 className="text-xl font-semibold">Coaching admission details</h2>
         <p className="mt-1 text-sm text-muted-foreground">
